@@ -14,16 +14,29 @@ pip install ragulate
 ## Usage
 
 ```sh
-ragulate -h
+usage: ragulate [-h] {download-llamadataset,ingest} ...
 
-usage: ragulate [-h] {download-llamadataset} ...
-
-RAGulate CLI tool.
+RAGu-late CLI tool.
 
 options:
   -h, --help            show this help message and exit
 
 commands:
+  {download-llamadataset,ingest}
     download-llamadataset
                         Download a llama-dataset
+    ingest              Run an ingest pipeline
+```
+
+### Download Dataset Example
+
+```
+ragulate download-llamadataset BraintrustCodaHelpDesk
+```
+
+### Ingest Example
+
+This command should work:
+```
+ragulate ingest -n chunk_size_500 -s experiment_chunk_size_and_k.py -m ingest --var-name chunk_size --var-value 500 --dataset BraintrustCodaHelpDesk
 ```

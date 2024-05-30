@@ -1,26 +1,30 @@
 import json
 import os
 import uuid
+from typing import Dict, List, Tuple
 
-from trulens_eval import Tru, Feedback, TruChain, TruLlama
+from trulens_eval import Feedback, Tru, TruChain, TruLlama
 from trulens_eval.app import App
 from trulens_eval.feedback.provider import OpenAI
 
-from .metrics import metrics
 from .framework import Framework
+from .metrics import metrics
 
-from typing import Dict, List, Tuple
 
-def get_queries_and_golden_set_from_llama_index_dataset(path: str) -> Tuple[List[str], List[Dict[str,str]]]:
+def get_queries_and_golden_set_from_llama_index_dataset(
+    path: str,
+) -> Tuple[List[str], List[Dict[str, str]]]:
     with open(os.path.join(path, "rag_dataset.json")) as f:
-        examples = json.load(f)['examples']
+        examples = json.load(f)["examples"]
         queries = [e["query"] for e in examples]
-        golden_set = [{
+        golden_set = [
+            {
                 "query": e["query"],
                 "response": e["reference_answer"],
-            } for e in examples]
+            }
+            for e in examples
+        ]
     return queries, golden_set
-
 
 
 class Recipe:
@@ -36,7 +40,7 @@ class Recipe:
     _framework = Framework
     _dataset = "braintrust_coda_help_desk"
 
-    def __init__(self, name:str, framework: Framework) -> None:
+    def __init__(self, name: str, framework: Framework) -> None:
         self._name = name
         self._framework = framework
 
@@ -46,13 +50,20 @@ class Recipe:
 
         m = metrics(llm_provider=llm_provider, pipeline=self._query_pipeline)
 
-        queries, golden_set = get_queries_and_golden_set_from_llama_index_dataset(f"./data/{self._dataset}/")
+        queries, golden_set = get_queries_and_golden_set_from_llama_index_dataset(
+            f"./data/{self._dataset}/"
+        )
 
         self._queries = queries
 
-        self._feedback_functions = [m.answer_correctness(golden_set=golden_set), m.answer_relevance(), m.context_relevance(), m.groundedness()]
+        self._feedback_functions = [
+            m.answer_correctness(golden_set=golden_set),
+            m.answer_relevance(),
+            m.context_relevance(),
+            m.groundedness(),
+        ]
 
-    def _get_recorder(self, app_id: str, feedback_mode : str = "deferred"):
+    def _get_recorder(self, app_id: str, feedback_mode: str = "deferred"):
         if self._framework == Framework.LANG_CHAIN:
             return TruChain(
                 self._query_pipeline,
@@ -69,7 +80,8 @@ class Recipe:
             )
         else:
             raise Exception(
-                f"Unknown framework: {self._framework} specified for _get_recorder()")
+                f"Unknown framework: {self._framework} specified for _get_recorder()"
+            )
 
     def _execute_query(self, query):
         if self._framework == Framework.LANG_CHAIN:
@@ -78,8 +90,8 @@ class Recipe:
             self._query_pipeline.query(query)
         else:
             raise Exception(
-                f"Unknown framework: {self._framework} specified for execute_query()")
-
+                f"Unknown framework: {self._framework} specified for execute_query()"
+            )
 
     def cook(self):
         # use a short uuid to ensure that multiple experiments with the same name don't collide in the DB
