@@ -11,7 +11,7 @@ from langchain_openai import OpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "gpt-3.5-turbo"
+LLM_MODEL = "gpt-3.5-turbo-instruct"
 
 
 def get_vector_store(chunk_size: int):

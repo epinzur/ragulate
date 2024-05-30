@@ -1,14 +1,22 @@
 import argparse
+import multiprocessing
+import threading
+import signal
+import sys
+
 
 from dotenv import load_dotenv
 
+
 from .datasets import LLAMA_DATASETS_LFS_URL, download_llama_dataset
-from .ingest import ingest
+from .pipelines import ingest, query
+
 from .logging_config import logger
+
+terminate_requested = False
 
 if load_dotenv():
     logger.info("Parsed .env file successfully")
-
 
 def setup_download_llama_dataset(subparsers):
     download_parser = subparsers.add_parser(
@@ -90,6 +98,57 @@ def setup_ingest(subparsers):
     ingest_parser.set_defaults(func=lambda args: ingest(**vars(args)))
 
 
+def setup_query(subparsers):
+    query_parser = subparsers.add_parser("query", help="Run an query pipeline")
+    query_parser.add_argument(
+        "-n",
+        "--name",
+        type=str,
+        help="A unique name for the query pipeline",
+        required=True,
+    )
+    query_parser.add_argument(
+        "-s",
+        "--script_path",
+        type=str,
+        help="The path to the python script that contains the query method",
+        required=True,
+    )
+    query_parser.add_argument(
+        "-m",
+        "--method-name",
+        type=str,
+        help="The name of the method in the script to run query",
+        required=True,
+    )
+    query_parser.add_argument(
+        "--var-name",
+        type=str,
+        help=(
+            "The name of a variable in the query script",
+            "This should be paired with a `--var-value` argument",
+            "and can be passed multiple times.",
+        ),
+        action="append",
+    )
+    query_parser.add_argument(
+        "--var-value",
+        type=str,
+        help=(
+            "The value of a variable in the query script",
+            "This should be paired with a `--var-name` argument",
+            "and can be passed multiple times.",
+        ),
+        action="append",
+    )
+    query_parser.add_argument(
+        "--dataset",
+        type=str,
+        help=("The name of a dataset to query", "This can be passed multiple times."),
+        action="append",
+    )
+    query_parser.set_defaults(func=lambda args: query(**vars(args)))
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="RAGu-late CLI tool.")
 
@@ -98,6 +157,7 @@ def main() -> None:
 
     setup_download_llama_dataset(subparsers=subparsers)
     setup_ingest(subparsers=subparsers)
+    setup_query(subparsers=subparsers)
 
     # Parse the command-line arguments
     args = parser.parse_args()

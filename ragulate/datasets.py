@@ -1,6 +1,7 @@
+import json
 import os
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Tuple
 
 import inflection
 from llama_index.core.llama_dataset import download
@@ -55,3 +56,24 @@ def get_source_file_paths(base_path: str, datasets: List[str]) -> List[str]:
         file_paths.extend([f for f in Path(source_path).iterdir() if f.is_file()])
 
     return file_paths
+
+def get_queries_and_golden_set(base_path: str, datasets: List[str]) -> Tuple[List[str], List[Dict[str, str]]]:
+    queries = []
+    golden_set = []
+
+    for dataset in datasets:
+        json_path = os.path.join(
+            get_llama_dataset_path(dataset_name=dataset, base_path=base_path),
+            "rag_dataset.json",
+        )
+        with open(json_path, "r") as f:
+            examples = json.load(f)["examples"]
+            queries.extend([e["query"] for e in examples])
+            golden_set.extend([
+                {
+                    "query": e["query"],
+                    "response": e["reference_answer"],
+                }
+                for e in examples
+            ])
+    return queries, golden_set

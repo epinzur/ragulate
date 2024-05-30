@@ -11,20 +11,7 @@ from .framework import Framework
 from .metrics import metrics
 
 
-def get_queries_and_golden_set_from_llama_index_dataset(
-    path: str,
-) -> Tuple[List[str], List[Dict[str, str]]]:
-    with open(os.path.join(path, "rag_dataset.json")) as f:
-        examples = json.load(f)["examples"]
-        queries = [e["query"] for e in examples]
-        golden_set = [
-            {
-                "query": e["query"],
-                "response": e["reference_answer"],
-            }
-            for e in examples
-        ]
-    return queries, golden_set
+
 
 
 class Recipe:
