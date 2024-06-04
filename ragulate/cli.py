@@ -1,19 +1,14 @@
 import argparse
-import multiprocessing
-import threading
-import signal
-import sys
-
-
 from dotenv import load_dotenv
 
 
 from .datasets import LLAMA_DATASETS_LFS_URL, download_llama_dataset
-from .pipelines import ingest, query
+from .query_pipeline import QueryPipeline
+from .ingest import ingest
 
 from .logging_config import logger
 
-terminate_requested = False
+from typing import List
 
 if load_dotenv():
     logger.info("Parsed .env file successfully")
@@ -149,7 +144,28 @@ def setup_query(subparsers):
     )
     query_parser.set_defaults(func=lambda args: query(**vars(args)))
 
+    def query(
+        name:str,
+        script_path: str,
+        method_name: str,
+        var_name: List[str],
+        var_value: List[str],
+        dataset: List[str],
+        **kwargs,
+    ):
+        query_pipeline = QueryPipeline(name=name, datasets=dataset)
+        query_pipeline.query(
+            script_path=script_path,
+            method_name=method_name,
+            var_names=var_name,
+            var_values=var_value,
+            datasets=dataset
+        )
+
+
 def main() -> None:
+
+
     parser = argparse.ArgumentParser(description="RAGu-late CLI tool.")
 
     # Subparsers for the main commands
