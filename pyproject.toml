@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "ragulate"
+version = "0.0.1"
+description = "A tool for evaluating RAG pipelines"
+authors = ["Eric Pinzur <epinzur@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+packages = [{include = "ragulate/"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+trulens-eval = { path="/Users/eric.pinzur/src/github.com/epinzur/trulens/trulens_eval/dist/trulens_eval-0.30.4-py3-none-any.whl" }
+kaleido = "^0.2.1"
+llama-index-core = "^0.10.39.post1"
+python-dotenv = "^1.0.1"
+plotly = "^5.22.0"
+inflection = "^0.5.1"
+tqdm = "^4.66.4"
+
+[tool.poetry.group.dev.dependencies]
+langchain-core = "^0.2.1"
+langchain-community = "0.2.1"
+langchain-openai= "0.1.7"
+black = "^24.4.2"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core", "setuptools>=42", "wheel", "pip"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+ragulate = "ragulate.cli:main"
