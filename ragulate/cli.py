@@ -1,14 +1,14 @@
 import argparse
 from dotenv import load_dotenv
 
-
+from .analysis_engine import AnalysisEngine
 from .datasets import LLAMA_DATASETS_LFS_URL, download_llama_dataset
 from .query_pipeline import QueryPipeline
 from .ingest import ingest
 
 from .logging_config import logger
 
-from typing import List
+from typing import List, Optional
 
 if load_dotenv():
     logger.info("Parsed .env file successfully")
@@ -162,6 +162,25 @@ def setup_query(subparsers):
             datasets=dataset
         )
 
+def setup_compare(subparsers):
+    compare_parser = subparsers.add_parser("compare", help="Compare results from 2 (or more) recipes")
+    compare_parser.add_argument(
+        "-r",
+        "--recipe",
+        type=str,
+        help="A recipe to compare. This can be passed multiple times.",
+        required=True,
+        action="append",
+    )
+    compare_parser.set_defaults(func=lambda args: compare(**vars(args)))
+
+def compare(
+    recipe:List[str],
+    **kwargs,
+):
+    analysis_engine = AnalysisEngine()
+    analysis_engine.compare(recipes = recipe)
+
 
 def main() -> None:
 
@@ -174,6 +193,7 @@ def main() -> None:
     setup_download_llama_dataset(subparsers=subparsers)
     setup_ingest(subparsers=subparsers)
     setup_query(subparsers=subparsers)
+    setup_compare(subparsers=subparsers)
 
     # Parse the command-line arguments
     args = parser.parse_args()

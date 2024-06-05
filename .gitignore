@@ -164,3 +164,12 @@ cython_debug/
 
 # default dataset download location
 data/
+
+# database files
+*.sqlite
+
+# generated images
+*.png
+!images/
+!images/*.png
+

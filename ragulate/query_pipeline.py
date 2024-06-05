@@ -12,7 +12,7 @@ from trulens_eval.schema.feedback import FeedbackResultStatus
 import signal
 import time
 
-from .utils import load_module, convert_string
+from .utils import load_module, convert_string, get_tru
 
 DEFERRED_FEEDBACK_MODE = "deferred"
 
@@ -23,8 +23,9 @@ class QueryPipeline:
     _tru: Tru
     _name: str
     _progress: tqdm
-    _queries: List[str]
-    _golden_set: List[Dict[str, str]]
+    _queries: Dict[str, List[str]] = {}
+    _golden_sets: Dict[str, List[Dict[str, str]]] = {}
+    _total_queries: int = 0
     _total_feedbacks: int = 0
     _finished_feedbacks: int = 0
     _finished_queries: int = 0
@@ -32,16 +33,18 @@ class QueryPipeline:
 
     def __init__(self, name: str, datasets: List[str]):
         self._name = name
-        self._tru = Tru(database_url=f"sqlite:///{name}.db") #, name=name)
+        self._tru = get_tru(recipe_name=name)
         self._tru.reset_database()
 
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
-        self._queries, self._golden_set = get_queries_and_golden_set("data", datasets=datasets)
+        for dataset in datasets:
+            self._queries[dataset], self._golden_sets[dataset] = get_queries_and_golden_set("data", dataset=dataset)
+            self._total_queries += len(self._queries[dataset])
 
         metric_count = 4
-        self._total_feedbacks = len(self._queries) * metric_count
+        self._total_feedbacks = self._total_queries * metric_count
 
     def signal_handler(self, sig, frame):
         self._sigint_received = True
@@ -95,7 +98,6 @@ class QueryPipeline:
         **kwargs,
     ):
 
-
         query_module = load_module(script_path, name="query_module")
         query_method = getattr(query_module, method_name)
 
@@ -108,20 +110,6 @@ class QueryPipeline:
 
         m = metrics(llm_provider=llm_provider, pipeline=pipeline)
 
-        feedback_functions = [
-            m.answer_correctness(golden_set=self._golden_set),
-            m.answer_relevance(),
-            m.context_relevance(),
-            m.groundedness(),
-        ]
-
-        recorder = TruChain(
-            pipeline,
-            app_id=name,
-            feedbacks=feedback_functions,
-            feedback_mode=DEFERRED_FEEDBACK_MODE,
-        )
-
         self.start_evaluation()
 
         time.sleep(0.1)
@@ -130,18 +118,33 @@ class QueryPipeline:
         )
         print("Progress postfix legend: (q)ueries completed; Evaluations (d)one, (r)unning, (w)aiting, (f)ailed, (s)kipped")
 
-        self._progress = tqdm(total=(len(self._queries) + self._total_feedbacks))
+        self._progress = tqdm(total=(self._total_queries + self._total_feedbacks))
 
-        for query in self._queries:
-            if self._sigint_received:
-                break
-            try:
-                with recorder:
-                    pipeline.invoke(query)
-            except Exception as e:
-                logger.error(f"Query: '{query}' caused exception, skipping.")
-            finally:
-                self.update_progress(query_change=1)
+        for dataset in self._queries:
+            feedback_functions = [
+                m.answer_correctness(golden_set=self._golden_sets[dataset]),
+                m.answer_relevance(),
+                m.context_relevance(),
+                m.groundedness(),
+            ]
+
+            recorder = TruChain(
+                pipeline,
+                app_id=dataset,
+                feedbacks=feedback_functions,
+                feedback_mode=DEFERRED_FEEDBACK_MODE,
+            )
+
+            for query in self._queries[dataset]:
+                if self._sigint_received:
+                    break
+                try:
+                    with recorder:
+                        pipeline.invoke(query)
+                except Exception as e:
+                    logger.error(f"Query: '{query}' caused exception, skipping.")
+                finally:
+                    self.update_progress(query_change=1)
 
         while self._finished_feedbacks < self._total_feedbacks:
             if self._sigint_received:

@@ -2,7 +2,7 @@
 
 A tool for evaluating RAG pipelines
 
-![](logo_smaller.png)
+![](images/logo_smaller.png)
 
 
 ## Installation
@@ -37,16 +37,35 @@ ragulate download-llamadataset BraintrustCodaHelpDesk
 
 ### Ingest Example
 
-This command should work:
+These commands should work:
 ```
 ragulate ingest -n chunk_size_500_k_2 -s experiment_chunk_size_and_k.py -m ingest \
 --var-name chunk_size --var-value 500 --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk
+
+ragulate ingest -n chunk_size_1000_k_2 -s experiment_chunk_size_and_k.py -m ingest \
+--var-name chunk_size --var-value 1000 --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk
 ```
 
 ### Query Exmaple
 
-This command should work:
+These commands should work:
 ```
 ragulate query -n chunk_size_500_k_2 -s experiment_chunk_size_and_k.py -m query_pipeline \
 --var-name chunk_size --var-value 500  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk
+
+ragulate query -n chunk_size_1000_k_2 -s experiment_chunk_size_and_k.py -m query_pipeline \
+--var-name chunk_size --var-value 1000  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk
+
+ragulate query -n chunk_size_500_k_5 -s experiment_chunk_size_and_k.py -m query_pipeline \
+--var-name chunk_size --var-value 500  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk
+
+ragulate query -n chunk_size_1000_k_5 -s experiment_chunk_size_and_k.py -m query_pipeline \
+--var-name chunk_size --var-value 1000 --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk
+```
+
+### Compare Recipes Example
+
+This command should work:
+```
+ragulate compare -r chunk_size_500_k_2 -r chunk_size_1000_k_2 -r chunk_size_500_k_5 -r chunk_size_1000_k_5
 ```

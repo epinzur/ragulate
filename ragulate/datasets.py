@@ -57,23 +57,19 @@ def get_source_file_paths(base_path: str, datasets: List[str]) -> List[str]:
 
     return file_paths
 
-def get_queries_and_golden_set(base_path: str, datasets: List[str]) -> Tuple[List[str], List[Dict[str, str]]]:
-    queries = []
-    golden_set = []
-
-    for dataset in datasets:
-        json_path = os.path.join(
-            get_llama_dataset_path(dataset_name=dataset, base_path=base_path),
-            "rag_dataset.json",
-        )
-        with open(json_path, "r") as f:
-            examples = json.load(f)["examples"]
-            queries.extend([e["query"] for e in examples])
-            golden_set.extend([
-                {
-                    "query": e["query"],
-                    "response": e["reference_answer"],
-                }
-                for e in examples
-            ])
-    return queries, golden_set
+def get_queries_and_golden_set(base_path: str, dataset: str) -> Tuple[List[str], List[Dict[str, str]]]:
+    json_path = os.path.join(
+        get_llama_dataset_path(dataset_name=dataset, base_path=base_path),
+        "rag_dataset.json",
+    )
+    with open(json_path, "r") as f:
+        examples = json.load(f)["examples"]
+        queries = [e["query"] for e in examples]
+        golden_set = [
+            {
+                "query": e["query"],
+                "response": e["reference_answer"],
+            }
+            for e in examples
+        ]
+        return queries, golden_set
