@@ -27,6 +27,7 @@ commands:
                         Download a llama-dataset
     ingest              Run an ingest pipeline
     query               Run an query pipeline
+    compare             Compare results from 2 (or more) recipes
 ```
 
 ### Download Dataset Example
