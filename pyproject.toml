@@ -9,7 +9,7 @@ packages = [{include = "ragulate/"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-epinzur-trulens-eval = ">=0.30.1a0"
+epinzur-trulens-eval = ">=0.30.1b0"
 kaleido = "^0.2.1"
 llama-index-core = "^0.10.39.post1"
 python-dotenv = "^1.0.1"
