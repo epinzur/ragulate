@@ -1,0 +1,38 @@
+name: Publish package to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger the workflow on push to tags like v1.0, v2.0 etc.
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures Git history and tags are fully fetched
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create false
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Update version in pyproject.toml based on Git tag
+        run: |
+          POETRY_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1) | sed 's/^v//')
+          sed -i "s/^version = .*/version = \"$POETRY_VERSION\"/" pyproject.toml
+
+      - name: Build and publish
+        run: |
+          poetry build
+          poetry publish
