@@ -31,8 +31,9 @@ jobs:
         run: |
           POETRY_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1) | sed 's/^v//')
           sed -i "s/^version = .*/version = \"$POETRY_VERSION\"/" pyproject.toml
+          cat pyproject.toml
 
-      - name: Build and publish
-        run: |
-          poetry build
-          poetry publish
+      # - name: Build and publish
+      #   run: |
+      #     poetry build
+      #     poetry publish
