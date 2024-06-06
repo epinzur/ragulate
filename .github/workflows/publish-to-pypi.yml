@@ -33,7 +33,8 @@ jobs:
           sed -i "s/^version = .*/version = \"$POETRY_VERSION\"/" pyproject.toml
           cat pyproject.toml
 
-      # - name: Build and publish
-      #   run: |
-      #     poetry build
-      #     poetry publish
+      - name: Build and publish
+        run: |
+          cat pyproject.toml
+          # poetry build
+          # poetry publish
