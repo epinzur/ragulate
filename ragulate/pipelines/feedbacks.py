@@ -8,7 +8,7 @@ from trulens_eval.feedback.provider.base import LLMProvider
 from trulens_eval.utils.serial import Lens
 
 
-class metrics:
+class Feedbacks:
     _context: Lens
     _llm_provider: LLMProvider
 
