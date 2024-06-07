@@ -14,7 +14,7 @@ pip install ragulate
 ## Usage
 
 ```sh
-usage: ragulate [-h] {download-llamadataset,ingest,query} ...
+usage: ragulate [-h] {download,ingest,query,compare} ...
 
 RAGu-late CLI tool.
 
@@ -22,9 +22,7 @@ options:
   -h, --help            show this help message and exit
 
 commands:
-  {download-llamadataset,ingest,query}
-    download-llamadataset
-                        Download a llama-dataset
+    download            Download a dataset
     ingest              Run an ingest pipeline
     query               Run an query pipeline
     compare             Compare results from 2 (or more) recipes
@@ -33,7 +31,7 @@ commands:
 ### Download Dataset Example
 
 ```
-ragulate download-llamadataset BraintrustCodaHelpDesk
+ragulate download -k llama BraintrustCodaHelpDesk
 ```
 
 ### Ingest Example

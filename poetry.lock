@@ -188,6 +188,25 @@ test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypo
 trio = ["trio (>=0.23)"]
 
 [[package]]
+name = "astrapy"
+version = "1.2.1"
+description = "AstraPy is a Pythonic SDK for DataStax Astra and its Data API"
+optional = false
+python-versions = "<4.0.0,>=3.8.0"
+files = [
+    {file = "astrapy-1.2.1-py3-none-any.whl", hash = "sha256:0d7ca1e6f18a6a4e9a41ffaf2aa4cc585d36de3e983b5c5ce0bbb30a1595e30b"},
+    {file = "astrapy-1.2.1.tar.gz", hash = "sha256:c4ba88ef16ac1e990ccba322d376b6ea256513a3004a0894c14bfa2403f1d646"},
+]
+
+[package.dependencies]
+bson = ">=0.5.10,<0.6.0"
+cassio = ">=0.1.4,<0.2.0"
+deprecation = ">=2.1.0,<2.2.0"
+httpx = {version = ">=0.25.2,<1", extras = ["http2"]}
+toml = ">=0.10.2,<0.11.0"
+uuid6 = ">=2024.1.12,<2024.2.0"
+
+[[package]]
 name = "async-timeout"
 version = "4.0.3"
 description = "Timeout context manager for asyncio programs"
@@ -296,6 +315,20 @@ files = [
 ]
 
 [[package]]
+name = "bson"
+version = "0.5.10"
+description = "BSON codec for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "bson-0.5.10.tar.gz", hash = "sha256:d6511b2ab051139a9123c184de1a04227262173ad593429d21e443d6462d6590"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4.0"
+six = ">=1.9.0"
+
+[[package]]
 name = "cachetools"
 version = "5.3.3"
 description = "Extensible memoizing collections and decorators"
@@ -305,6 +338,69 @@ files = [
     {file = "cachetools-5.3.3-py3-none-any.whl", hash = "sha256:0abad1021d3f8325b2fc1d2e9c8b9c9d57b04c3932657a72465447332c24d945"},
     {file = "cachetools-5.3.3.tar.gz", hash = "sha256:ba29e2dfa0b8b556606f097407ed1aa62080ee108ab0dc5ec9d6a723a007d105"},
 ]
+
+[[package]]
+name = "cassandra-driver"
+version = "3.29.1"
+description = "DataStax Driver for Apache Cassandra"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cassandra-driver-3.29.1.tar.gz", hash = "sha256:38e9c2a2f2a9664bb03f1f852d5fccaeff2163942b5db35dffcf8bf32a51cfe5"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:a8f175c7616a63ca48cb8bd4acc443e2a3d889964d5157cead761f23cc8db7bd"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:7d66398952b9cd21c40edff56e22b6d3bce765edc94b207ddb5896e7bc9aa088"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5bbc6f575ef109ce5d4abfa2033bf36c394032abd83e32ab671159ce68e7e17b"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:78f241af75696adb3e470209e2fbb498804c99e2b197d24d74774eee6784f283"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-win32.whl", hash = "sha256:54d9e651a742d6ca3d874ef8d06a40fa032d2dba97142da2d36f60c5675e39f8"},
+    {file = "cassandra_driver-3.29.1-cp310-cp310-win_amd64.whl", hash = "sha256:630dc5423cd40eba0ee9db31065e2238098ff1a25a6b1bd36360f85738f26e4b"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:0b841d38c96bb878d31df393954863652d6d3a85f47bcc00fd1d70a5ea73023f"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:19cc7375f673e215bd4cbbefae2de9f07830be7dabef55284a2d2ff8d8691efe"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2b74b355be3dcafe652fffda8f14f385ccc1a8dae9df28e6080cc660da39b45f"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0e6dac7eddd3f4581859f180383574068a3f113907811b4dad755a8ace4c3fbd"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-win32.whl", hash = "sha256:293a79dba417112b56320ed0013d71fd7520f5fc4a5fd2ac8000c762c6dd5b07"},
+    {file = "cassandra_driver-3.29.1-cp311-cp311-win_amd64.whl", hash = "sha256:7c2374fdf1099047a6c9c8329c79d71ad11e61d9cca7de92a0f49655da4bdd8a"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:4431a0c836f33a33c733c84997fbdb6398be005c4d18a8c8525c469fdc29393c"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:d23b08381b171a9e42ace483a82457edcddada9e8367e31677b97538cde2dc34"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4beb29a0139e63a10a5b9a3c7b72c30a4e6e20c9f0574f9d22c0d4144fe3d348"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1b206423cc454a78f16b411e7cb641dddc26168ac2e18f2c13665f5f3c89868c"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-win32.whl", hash = "sha256:ac898cca7303a3a2a3070513eee12ef0f1be1a0796935c5b8aa13dae8c0a7f7e"},
+    {file = "cassandra_driver-3.29.1-cp312-cp312-win_amd64.whl", hash = "sha256:4ad0c9fb2229048ad6ff8c6ddbf1fdc78b111f2b061c66237c2257fcc4a31b14"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:4282c5deac462e4bb0f6fd0553a33d514dbd5ee99d0812594210080330ddd1a2"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:41ca7eea069754002418d3bdfbd3dfd150ea12cb9db474ab1a01fa4679a05bcb"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f6639ccb268c4dc754bc45e03551711780d0e02cb298ab26cde1f42b7bcc74f8"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1a9d7d3b1be24a7f113b5404186ccccc977520401303a8fe78ba34134cad2482"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-win32.whl", hash = "sha256:81c8fd556c6e1bb93577e69c1f10a3fadf7ddb93958d226ccbb72389396e9a92"},
+    {file = "cassandra_driver-3.29.1-cp38-cp38-win_amd64.whl", hash = "sha256:cfe70ed0f27af949de2767ea9cef4092584e8748759374a55bf23c30746c7b23"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a2c03c1d834ac1a0ae39f9af297a8cd38829003ce910b08b324fb3abe488ce2b"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:9a3e1e2b01f3b7a5cf75c97401bce830071d99c42464352087d7475e0161af93"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:90c42006665a4e490b0766b70f3d637f36a30accbef2da35d6d4081c0e0bafc3"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0c1aca41f45772f9759e8246030907d92bc35fbbdc91525a3cb9b49939b80ad7"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-win32.whl", hash = "sha256:ce4a66245d4a0c8b07fdcb6398698c2c42eb71245fb49cff39435bb702ff7be6"},
+    {file = "cassandra_driver-3.29.1-cp39-cp39-win_amd64.whl", hash = "sha256:4cae69ceb1b1d9383e988a1b790115253eacf7867ceb15ed2adb736e3ce981be"},
+]
+
+[package.dependencies]
+geomet = ">=0.1,<0.3"
+
+[package.extras]
+cle = ["cryptography (>=35.0)"]
+graph = ["gremlinpython (==3.4.6)"]
+
+[[package]]
+name = "cassio"
+version = "0.1.8"
+description = "A framework-agnostic Python library to seamlessly integrate Apache Cassandra(R) with ML/LLM/genAI workloads."
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "cassio-0.1.8-py3-none-any.whl", hash = "sha256:c09e7c884ba7227ff5277c86f3b0f31c523672ea407f56d093c7227e69c54d94"},
+    {file = "cassio-0.1.8.tar.gz", hash = "sha256:4e09929506cb3dd6fad217e89846d0a1a59069afd24b82c72526ef6f2e9271af"},
+]
+
+[package.dependencies]
+cassandra-driver = ">=3.28.0,<4.0.0"
+numpy = ">=1.0"
+requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "certifi"
@@ -550,6 +646,20 @@ wrapt = ">=1.10,<2"
 
 [package.extras]
 dev = ["PyTest", "PyTest-Cov", "bump2version (<1)", "sphinx (<2)", "tox"]
+
+[[package]]
+name = "deprecation"
+version = "2.1.0"
+description = "A library to handle automated deprecations"
+optional = false
+python-versions = "*"
+files = [
+    {file = "deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a"},
+    {file = "deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff"},
+]
+
+[package.dependencies]
+packaging = "*"
 
 [[package]]
 name = "dill"
@@ -914,6 +1024,21 @@ test-full = ["adlfs", "aiohttp (!=4.0.0a0,!=4.0.0a1)", "cloudpickle", "dask", "d
 tqdm = ["tqdm"]
 
 [[package]]
+name = "geomet"
+version = "0.2.1.post1"
+description = "GeoJSON <-> WKT/WKB conversion utilities"
+optional = false
+python-versions = ">2.6, !=3.3.*, <4"
+files = [
+    {file = "geomet-0.2.1.post1-py3-none-any.whl", hash = "sha256:a41a1e336b381416d6cbed7f1745c848e91defaa4d4c1bdc1312732e46ffad2b"},
+    {file = "geomet-0.2.1.post1.tar.gz", hash = "sha256:91d754f7c298cbfcabd3befdb69c641c27fe75e808b27aa55028605761d17e95"},
+]
+
+[package.dependencies]
+click = "*"
+six = "*"
+
+[[package]]
 name = "gitdb"
 version = "4.0.11"
 description = "Git Object Database"
@@ -1028,6 +1153,32 @@ files = [
 ]
 
 [[package]]
+name = "h2"
+version = "4.1.0"
+description = "HTTP/2 State-Machine based protocol implementation"
+optional = false
+python-versions = ">=3.6.1"
+files = [
+    {file = "h2-4.1.0-py3-none-any.whl", hash = "sha256:03a46bcf682256c95b5fd9e9a99c1323584c3eec6440d379b9903d709476bc6d"},
+    {file = "h2-4.1.0.tar.gz", hash = "sha256:a83aca08fbe7aacb79fec788c9c0bac936343560ed9ec18b82a13a12c28d2abb"},
+]
+
+[package.dependencies]
+hpack = ">=4.0,<5"
+hyperframe = ">=6.0,<7"
+
+[[package]]
+name = "hpack"
+version = "4.0.0"
+description = "Pure-Python HPACK header compression"
+optional = false
+python-versions = ">=3.6.1"
+files = [
+    {file = "hpack-4.0.0-py3-none-any.whl", hash = "sha256:84a076fad3dc9a9f8063ccb8041ef100867b1878b25ef0ee63847a5d53818a6c"},
+    {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
+]
+
+[[package]]
 name = "htbuilder"
 version = "0.6.2"
 description = "A purely-functional HTML builder for Python. Think JSX rather than templates."
@@ -1076,6 +1227,7 @@ files = [
 [package.dependencies]
 anyio = "*"
 certifi = "*"
+h2 = {version = ">=3,<5", optional = true, markers = "extra == \"http2\""}
 httpcore = "==1.*"
 idna = "*"
 sniffio = "*"
@@ -1099,6 +1251,17 @@ files = [
 
 [package.extras]
 tests = ["freezegun", "pytest", "pytest-cov"]
+
+[[package]]
+name = "hyperframe"
+version = "6.0.1"
+description = "HTTP/2 framing layer for Python"
+optional = false
+python-versions = ">=3.6.1"
+files = [
+    {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
+    {file = "hyperframe-6.0.1.tar.gz", hash = "sha256:ae510046231dc8e9ecb1a6586f63d2347bf4c8905914aa84ba585ae85f28a914"},
+]
 
 [[package]]
 name = "idna"
@@ -1226,12 +1389,17 @@ referencing = ">=0.31.0"
 
 [[package]]
 name = "kaleido"
-version = "0.2.1.post1"
+version = "0.2.1"
 description = "Static image export for web-based visualization libraries with zero dependencies"
 optional = false
 python-versions = "*"
 files = [
-    {file = "kaleido-0.2.1.post1-py2.py3-none-manylinux2014_armv7l.whl", hash = "sha256:d313940896c24447fc12c74f60d46ea826195fc991f58569a6e73864d53e5c20"},
+    {file = "kaleido-0.2.1-py2.py3-none-macosx_10_11_x86_64.whl", hash = "sha256:ca6f73e7ff00aaebf2843f73f1d3bacde1930ef5041093fe76b83a15785049a7"},
+    {file = "kaleido-0.2.1-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:bb9a5d1f710357d5d432ee240ef6658a6d124c3e610935817b4b42da9c787c05"},
+    {file = "kaleido-0.2.1-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:aa21cf1bf1c78f8fa50a9f7d45e1003c387bd3d6fe0a767cfbbf344b95bdc3a8"},
+    {file = "kaleido-0.2.1-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:845819844c8082c9469d9c17e42621fbf85c2b237ef8a86ec8a8527f98b6512a"},
+    {file = "kaleido-0.2.1-py2.py3-none-win32.whl", hash = "sha256:ecc72635860be616c6b7161807a65c0dbd9b90c6437ac96965831e2e24066552"},
+    {file = "kaleido-0.2.1-py2.py3-none-win_amd64.whl", hash = "sha256:4670985f28913c2d063c5734d125ecc28e40810141bdb0a46f15b76c1d45f23c"},
 ]
 
 [[package]]
@@ -1386,6 +1554,22 @@ llms = ["clarifai (>=9.1.0)", "cohere (>=4,<6)", "huggingface_hub (>=0,<1)", "ma
 openai = ["openai (<2)", "tiktoken (>=0.3.2,<0.6.0)"]
 qdrant = ["qdrant-client (>=1.3.1,<2.0.0)"]
 text-helpers = ["chardet (>=5.1.0,<6.0.0)"]
+
+[[package]]
+name = "langchain-astradb"
+version = "0.3.3"
+description = "An integration package connecting Astra DB and LangChain"
+optional = false
+python-versions = "<4.0,>=3.8.1"
+files = [
+    {file = "langchain_astradb-0.3.3-py3-none-any.whl", hash = "sha256:39deef1253947ef1bfaf3c27881ecdf07621d96c2cf37814aed9e506a9bee217"},
+    {file = "langchain_astradb-0.3.3.tar.gz", hash = "sha256:f9a996ec4bef134896195430adeb7f264389c368a03d2ea91356837e8ddde091"},
+]
+
+[package.dependencies]
+astrapy = ">=1.2,<2.0"
+langchain-core = ">=0.1.31,<0.3"
+numpy = ">=1,<2"
 
 [[package]]
 name = "langchain-community"
@@ -3686,6 +3870,17 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "uuid6"
+version = "2024.1.12"
+description = "New time-based UUID formats which are suited for use as a database key"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "uuid6-2024.1.12-py3-none-any.whl", hash = "sha256:8150093c8d05a331bc0535bc5ef6cf57ac6eceb2404fd319bc10caee2e02c065"},
+    {file = "uuid6-2024.1.12.tar.gz", hash = "sha256:ed0afb3a973057575f9883201baefe402787ca5e11e1d24e377190f0c43f1993"},
+]
+
+[[package]]
 name = "validators"
 version = "0.28.3"
 description = "Python Data Validation for Humans™"
@@ -3925,4 +4120,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "ede06679bbee0905cdc816b7c28b2c829af1a73ac846dbb7284be80ac506a1c7"
+content-hash = "da0e35853bec0d8701394206b6d25986045ea38e195bfa5868028c1cc14038a2"

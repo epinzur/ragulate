@@ -163,7 +163,7 @@ cython_debug/
 #.idea/
 
 # default dataset download location
-data/
+datasets/
 
 # database files
 *.sqlite
