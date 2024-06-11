@@ -9,7 +9,7 @@ packages = [{include = "ragulate/*"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-epinzur-trulens-eval = ">=0.30.1b0"
+trulens-eval = ">=0.31"
 kaleido = "0.2.1"
 inflection = "^0.5.1"
 llama-index-core = "^0.10.31"
