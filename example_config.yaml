@@ -1,6 +1,6 @@
 version: 0.1
 
-pipelines:
+steps:
   ingest:
     - name: chunk_size_ingest
       script: chunk_size_experiment.py
@@ -19,25 +19,34 @@ recipes:
     ingest: chunk_size_ingest
     query: chunk_size_query
     cleanup: chunk_size_cleanup
-    variables:
-      - name: chunk_size
-        value: 500
+    ingredients:
+      - chunk_size: 500
   - name: chunk_size_1000
     ingest: chunk_size_ingest
     query: chunk_size_query
     cleanup: chunk_size_cleanup
-    variables:
-      - name: chunk_size
-        value: 1000
+    ingredients:
+      - chunk_size: 1000
+
 
 datasets:
-  - blockchain_solana
-  - braintrust_coda_help_desk
+  - name: blockchain_solana
+    kind: llama
+  - name: braintrust_coda_help_desk
+    kind: llama
 
-metrics:
-  - groundedness
-  - answer_correctness
-
-eval_llm:
+eval_llms:
   - vendor: open_ai
     model: gpt3.5-turbo
+    name: gpt3.5
+    default: true
+  - name: llama3
+    vendor: huggingface
+    model: llama3
+
+metrics:
+  groundedness:
+    enabled: true
+  answer_correctness:
+    enabled: true
+    eval_llm: llama3
