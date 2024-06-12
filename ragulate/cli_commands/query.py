@@ -3,9 +3,12 @@ from typing import List
 from ragulate.datasets import find_dataset
 from ragulate.pipelines import QueryPipeline
 
+<<<<<<< HEAD
 from ..utils import convert_vars_to_ingredients
 
 
+=======
+>>>>>>> 273a5ff (Add Support for Other Providers OpenAI, AzureOpenAI, Bedrock, LiteLLM, Langchain, Huggingface)
 def setup_query(subparsers):
     query_parser = subparsers.add_parser("query", help="Run an query pipeline")
     query_parser.add_argument(
@@ -90,6 +93,18 @@ def setup_query(subparsers):
         ),
         action="store_true",
     )
+    query_parser.add_argument(
+        "--llm_provider",
+        type=str,
+        help=("The name of the LLM Provider to use for Evaluation."),
+        choices=["OpenAI", "AzureOpenAI", "Bedrock", "LiteLLM", "Langchain", "Huggingface"],
+
+    )
+    query_parser.add_argument(
+        "--model_name",
+        type=str,
+        help=("The name or id of the LLM model or deployment to use for Evaluation."),
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -103,6 +118,8 @@ def setup_query(subparsers):
         sample: float,
         seed: int,
         restart: bool,
+        llm_provider: str,
+        model_name: str,
         **kwargs,
     ):
         if sample <= 0.0 or sample > 1.0:
@@ -131,5 +148,7 @@ def setup_query(subparsers):
             sample_percent=sample,
             random_seed=seed,
             restart_pipeline=restart,
+            llm_provider=llm_provider,
+            model_name=model_name,
         )
         query_pipeline.query()

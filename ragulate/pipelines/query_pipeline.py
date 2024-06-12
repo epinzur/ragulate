@@ -5,7 +5,8 @@ from typing import Any, Dict, List, Optional
 
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
-from trulens_eval.feedback.provider import OpenAI
+from trulens_eval.feedback.provider import OpenAI, AzureOpenAI, Bedrock, LiteLLM, Langchain, Huggingface
+from trulens_eval.feedback.provider.base import LLMProvider
 from trulens_eval.schema.feedback import FeedbackMode, FeedbackResultStatus
 
 from ragulate.datasets import BaseDataset
@@ -47,7 +48,9 @@ class QueryPipeline(BasePipeline):
         datasets: List[BaseDataset],
         sample_percent: float = 1.0,
         random_seed: Optional[int] = None,
-        restart_pipeline: bool = False,
+        restart_pipeline: Optional[bool] = False,
+        llm_provider: Optional[str] = "OpenAI",
+        model_name: Optional[str] = None,
         **kwargs,
     ):
         super().__init__(
@@ -61,6 +64,8 @@ class QueryPipeline(BasePipeline):
         self.sample_percent = sample_percent
         self.random_seed = random_seed
         self.restart_pipeline = restart_pipeline
+        self.llm_provider = llm_provider
+        self.model_name=model_name
 
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -139,11 +144,30 @@ class QueryPipeline(BasePipeline):
 
         self._finished_feedbacks = done
 
+    def get_provider(self) -> LLMProvider:
+        provider_name = self.provider_name.lower()
+        model_name = self.model_name
+
+        if provider_name == 'openai':
+            return OpenAI(model_engine=model_name)
+        elif provider_name == 'azureopenai':
+            return AzureOpenAI(deployment_name=model_name)
+        elif provider_name == 'bedrock':
+            return Bedrock(model_id=model_name)
+        elif provider_name == 'litellm':
+            return LiteLLM(model_engine=model_name)
+        elif provider_name == 'Langchain':
+            return Langchain(model_engine=model_name)
+        elif provider_name == 'huggingface':
+            return Huggingface(name=model_name)
+        else:
+            raise ValueError(f"Unsupported provider: {provider_name}")
+
     def query(self):
         query_method = self.get_method()
 
         pipeline = query_method(**self.ingredients)
-        llm_provider = OpenAI(model_engine="gpt-3.5-turbo")
+        llm_provider = self.get_provider()
 
         feedbacks = Feedbacks(llm_provider=llm_provider, pipeline=pipeline)
 
