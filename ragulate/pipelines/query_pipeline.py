@@ -1,10 +1,10 @@
 import signal
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
-from trulens_eval.feedback.provider import OpenAI
+from trulens_eval.feedback.provider import OpenAI, AzureOpenAI, Bedrock, LiteLLM, Langchain, Huggingface
 from trulens_eval.schema.feedback import FeedbackMode, FeedbackResultStatus
 
 from ragulate.datasets import BaseDataset
@@ -37,6 +37,8 @@ class QueryPipeline(BasePipeline):
         var_names: List[str],
         var_values: List[str],
         datasets: List[BaseDataset],
+        llm_provider: str = OpenAI,
+        model_name: Optional[str] = None,
         **kwargs,
     ):
         super().__init__(
@@ -49,7 +51,8 @@ class QueryPipeline(BasePipeline):
         )
         self._tru = get_tru(recipe_name=recipe_name)
         self._tru.reset_database()
-
+        self.llm_provider = llm_provider
+        self.model_name=model_name
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
@@ -102,13 +105,45 @@ class QueryPipeline(BasePipeline):
             self._progress.update(update)
 
         self._finished_feedbacks = done
+    
+    def initialize_provider(self, provider_name: str, model_name: str):
+        if model_name == None:
+            if provider_name == 'OpenAI':
+                return OpenAI()
+            elif provider_name == 'AzureOpenAI':
+                return AzureOpenAI()
+            elif provider_name == 'Bedrock':
+                return Bedrock()
+            elif provider_name == 'LiteLLM':
+                return LiteLLM()
+            elif provider_name == 'Langchain':
+                return Langchain()
+            elif provider_name == 'Huggingface':
+                return Huggingface()
+            else:
+                raise ValueError(f"Unsupported provider: {provider_name}")
+        else:
+            if provider_name == 'OpenAI':
+                return OpenAI(model_name)
+            elif provider_name == 'AzureOpenAI':
+                return AzureOpenAI(model_name)
+            elif provider_name == 'Bedrock':
+                return Bedrock(model_name)
+            elif provider_name == 'LiteLLM':
+                return LiteLLM(model_name)
+            elif provider_name == 'Langchain':
+                return Langchain(model_name)
+            elif provider_name == 'Huggingface':
+                return Huggingface(model_name)
+            else:
+                raise ValueError(f"Unsupported provider: {provider_name}")
 
     def query(self):
         query_method = self.get_method(kind="query")
         params = self.get_params()
 
         pipeline = query_method(**params)
-        llm_provider = OpenAI()
+        llm_provider = self.initialize_provider(self.llm_provider, self.model_name)
 
         feedbacks = Feedbacks(llm_provider=llm_provider, pipeline=pipeline)
 
