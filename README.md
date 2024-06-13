@@ -77,12 +77,36 @@ commands:
     ingest              Run an ingest pipeline
     query               Run an query pipeline
     compare             Compare results from 2 (or more) recipes
+    run                 Run an experiment from a config file
 ```
 
 ### Example
 
 For the examples below, we will use the example experiment [open_ai_chunk_size_and_k.py](open_ai_chunk_size_and_k.py)
 and see how the RAG metrics change for changes in `chunk_size` and `k` (number of documents retrieved).
+
+There are two ways to run Ragulate to run an experiment. Either define an experiment with a config file or execute it manually step by step.
+
+#### Via Config File
+
+**Note: Running via config file is a new feature and it is not as stable as running manually.**
+
+1. Create a yaml config file with a similar format to the example config: [example_config.yaml](example_config.yaml).  This defines the same test as shown manually below.
+
+1. Execute it with a single command:
+
+    ```
+    ragulate run example_config.yaml
+    ```
+
+    This will:
+    * Download the test datasets
+    * Run the ingest pipelines
+    * Run the query pipelines
+    * Output an analysis of the results.
+
+
+#### Manually
 
 1. Download a dataset. See available datasets here: https://llamahub.ai/?tab=llama_datasets
   * If you are unsure where to start, recommended datasets are:
@@ -96,49 +120,49 @@ and see how the RAG metrics change for changes in `chunk_size` and `k` (number o
 2. Ingest the datasets using different methods:
 
     Examples:
-    * Ingest with `chunk_size=500`:
+    * Ingest with `chunk_size=200`:
       ```
-      ragulate ingest -n chunk_size_500 -s open_ai_chunk_size_and_k.py -m ingest \
-      --var-name chunk_size --var-value 500 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ragulate ingest -n chunk_size_200 -s open_ai_chunk_size_and_k.py -m ingest \
+      --var-name chunk_size --var-value 200 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
-    * Ingest with `chunk_size=1000`:
+    * Ingest with `chunk_size=100`:
       ```
-      ragulate ingest -n chunk_size_1000 -s open_ai_chunk_size_and_k.py -m ingest \
-      --var-name chunk_size --var-value 1000 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ragulate ingest -n chunk_size_100 -s open_ai_chunk_size_and_k.py -m ingest \
+      --var-name chunk_size --var-value 100 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
 3. Run query and evaluations on the datasets using methods:
 
     Examples:
-    * Query with `chunk_size=500` and `k=2`
+    * Query with `chunk_size=200` and `k=2`
       ```
-      ragulate query -n chunk_size_500_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
-      --var-name chunk_size --var-value 500  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
-      ```
-
-    * Query with `chunk_size=1000` and `k=2`
-      ```
-      ragulate query -n chunk_size_1000_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
-      --var-name chunk_size --var-value 1000  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ragulate query -n chunk_size_200_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
+      --var-name chunk_size --var-value 200  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
-    * Query with `chunk_size=500` and `k=5`
+    * Query with `chunk_size=100` and `k=2`
       ```
-      ragulate query -n chunk_size_500_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
-      --var-name chunk_size --var-value 500  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ragulate query -n chunk_size_100_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
+      --var-name chunk_size --var-value 100  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
-    * Query with `chunk_size=1000` and `k=25`
+    * Query with `chunk_size=200` and `k=5`
       ```
-      ragulate query -n chunk_size_1000_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
-      --var-name chunk_size --var-value 1000  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ragulate query -n chunk_size_200_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
+      --var-name chunk_size --var-value 200  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
+      ```
+
+    * Query with `chunk_size=100` and `k=5`
+      ```
+      ragulate query -n chunk_size_100_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
+      --var-name chunk_size --var-value 100  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
 1. Run a compare to get the results:
 
     Example:
       ```
-      ragulate compare -r chunk_size_500_k_2 -r chunk_size_1000_k_2 -r chunk_size_500_k_5 -r chunk_size_1000_k_5
+      ragulate compare -r chunk_size_100_k_2 -r chunk_size_200_k_2 -r chunk_size_100_k_5 -r chunk_size_200_k_5
       ```
 
     This will output 2 png files. one for each dataset.

@@ -9,7 +9,9 @@ from ..logging_config import logger
 
 
 def setup_run(subparsers):
-    run_parser = subparsers.add_parser("run", help="Run an experiment")
+    run_parser = subparsers.add_parser(
+        "run", help="Run an experiment from a config file"
+    )
     run_parser.add_argument(
         "config_file",
         type=str,
@@ -27,6 +29,9 @@ def call_run(config_file: str, **kwargs):
     ingest_pipelines: List[IngestPipeline] = []
     query_pipelines: List[QueryPipeline] = []
     cleanup_pipelines = []
+
+    for dataset in config.datasets.values():
+        dataset.download_dataset()
 
     for name, recipe in config.recipes.items():
         if recipe.ingest is not None:

@@ -45,7 +45,9 @@ recipes:
       - k: 5
 
 datasets:
-  - name: braintrust_small
+  - name: BraintrustCodaHelpDesk
+    kind: llama
+  - name: BlockchainSolana
     kind: llama
 
 eval_llms:
