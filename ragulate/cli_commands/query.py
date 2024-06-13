@@ -3,6 +3,8 @@ from typing import List
 from ragulate.datasets import load_datasets
 from ragulate.pipelines import QueryPipeline
 
+from ..utils import convert_vars_to_ingredients
+
 
 def setup_query(subparsers):
     query_parser = subparsers.add_parser("query", help="Run an query pipeline")
@@ -66,12 +68,13 @@ def setup_query(subparsers):
     ):
         datasets = load_datasets(dataset_names=dataset)
 
+        ingredients = convert_vars_to_ingredients(var_names=var_name, var_values=var_value)
+
         query_pipeline = QueryPipeline(
             recipe_name=name,
             script_path=script_path,
             method_name=method_name,
-            var_names=var_name,
-            var_values=var_value,
+            ingredients=ingredients,
             datasets=datasets,
         )
         query_pipeline.query()

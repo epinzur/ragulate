@@ -1,7 +1,6 @@
 
-from .config_parser import Config
+from .config_parser import ConfigParser
 
 __all__ = [
-    "Config",
+    "ConfigParser",
 ]
-

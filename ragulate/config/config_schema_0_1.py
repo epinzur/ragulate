@@ -126,7 +126,7 @@ class ConfigSchema_0_1(BaseConfigSchema):
                 doc_script = doc_step.get('script', None)
                 doc_method = doc_step.get('method', None)
                 if doc_name in steps:
-                    raise(f"{step_kind} step names must be unique. Found {doc_name} more than once.")
+                    raise ValueError(f"{step_kind} step names must be unique. Found {doc_name} more than once.")
                 steps[doc_name] = Step(name=doc_name, script=doc_script, method=doc_method)
 
         recipes: Dict[str, Recipe] = {}
@@ -139,15 +139,14 @@ class ConfigSchema_0_1(BaseConfigSchema):
             for doc_ingredient in doc_ingredients:
                 for key, value in doc_ingredient.items():
                     if key in ingredients:
-                        raise(f"ingredient {key} appears in recipe more than once.")
+                        raise ValueError(f"ingredient {key} appears in recipe more than once.")
                     ingredients[key] = value
 
-            print(f"ingredients: {ingredients}")
             doc_name = doc_recipe.get('name', None)
 
             if doc_name is None:
                 if len(doc_ingredients) == 0:
-                    raise(f"recipe must either have a `name` defined or contain at least one ingredient.")
+                    raise ValueError(f"recipe must either have a `name` defined or contain at least one ingredient.")
                 else:
                     recipe_name = dict_to_string(ingredients)
             else:
@@ -159,15 +158,15 @@ class ConfigSchema_0_1(BaseConfigSchema):
                 doc_recipe_step = doc_recipe.get(step_kind, None)
                 step = step_map[step_kind].get(doc_recipe_step, None)
                 if doc_recipe_step is not None and step is None:
-                    raise(f"{step_kind} step {doc_recipe_step} for recipe {recipe_name} is not defined in the `steps` section")
+                    raise ValueError(f"{step_kind} step {doc_recipe_step} for recipe {recipe_name} is not defined in the `steps` section")
                 else:
                     recipe_steps[step_kind] = step
 
             if 'query' not in recipe_steps:
-                raise(f"query step is missing for recipe {recipe_name}")
+                raise ValueError(f"query step is missing for recipe {recipe_name}")
 
             if recipe_name in recipes:
-                raise(f"recipe names must be unique. Found {recipe_name} more than once.")
+                raise ValueError(f"recipe names must be unique. Found {recipe_name} more than once.")
 
             recipes[recipe_name] = Recipe(name=recipe_name,
                                             ingest=recipe_steps.get('ingest'),
