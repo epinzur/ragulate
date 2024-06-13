@@ -6,6 +6,7 @@ from tqdm import tqdm
 from ..logging_config import logger
 from .base_pipeline import BasePipeline
 
+
 class IngestPipeline(BasePipeline):
 
     @property

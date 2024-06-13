@@ -1,11 +1,10 @@
+from typing import Any, Dict
+
 import yaml
 from cerberus import Validator
 
 from .base_config_schema import BaseConfigSchema
 from .config_schema_0_1 import ConfigSchema_0_1
-
-
-from typing import Any, Dict
 from .objects import Config
 
 
@@ -14,7 +13,6 @@ class ConfigParser:
     _valid: bool
     _errors: Any
     _document: Any
-
 
     def __init__(self, config_schema: BaseConfigSchema, config: Dict[str, Any]):
         self._config_schema = config_schema
@@ -30,10 +28,10 @@ class ConfigParser:
 
     @classmethod
     def from_file(cls, file_path: str) -> "ConfigParser":
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             config = yaml.safe_load(file)
 
-            version = config.get('version', 0.1)
+            version = config.get("version", 0.1)
             if version == 0.1:
                 return cls(config_schema=ConfigSchema_0_1(), config=config)
             else:

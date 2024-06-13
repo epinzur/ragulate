@@ -69,7 +69,9 @@ def setup_ingest(subparsers):
 
         datasets = [find_dataset(name=name) for name in dataset]
 
-        ingredients = convert_vars_to_ingredients(var_names=var_name, var_values=var_value)
+        ingredients = convert_vars_to_ingredients(
+            var_names=var_name, var_values=var_value
+        )
 
         ingest_pipeline = IngestPipeline(
             recipe_name=name,

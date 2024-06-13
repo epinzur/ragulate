@@ -1,11 +1,10 @@
-from ragulate.config import ConfigParser
-from ragulate.pipelines import IngestPipeline, QueryPipeline
-from ragulate.datasets import BaseDataset, LlamaDataset
-
-from ..analysis import Analysis
-
 from typing import List
 
+from ragulate.config import ConfigParser
+from ragulate.datasets import BaseDataset, LlamaDataset
+from ragulate.pipelines import IngestPipeline, QueryPipeline
+
+from ..analysis import Analysis
 from ..logging_config import logger
 
 
@@ -31,21 +30,25 @@ def call_run(config_file: str, **kwargs):
 
     for name, recipe in config.recipes.items():
         if recipe.ingest is not None:
-            ingest_pipelines.append(IngestPipeline(
-                recipe_name=name,
-                script_path=recipe.ingest.script,
-                method_name=recipe.ingest.method,
-                ingredients=recipe.ingredients,
-                datasets=config.datasets.values(),
-            ))
+            ingest_pipelines.append(
+                IngestPipeline(
+                    recipe_name=name,
+                    script_path=recipe.ingest.script,
+                    method_name=recipe.ingest.method,
+                    ingredients=recipe.ingredients,
+                    datasets=config.datasets.values(),
+                )
+            )
         if recipe.query is not None:
-            query_pipelines.append(QueryPipeline(
-                recipe_name=name,
-                script_path=recipe.query.script,
-                method_name=recipe.query.method,
-                ingredients=recipe.ingredients,
-                datasets=config.datasets.values(),
-            ))
+            query_pipelines.append(
+                QueryPipeline(
+                    recipe_name=name,
+                    script_path=recipe.query.script,
+                    method_name=recipe.query.method,
+                    ingredients=recipe.ingredients,
+                    datasets=config.datasets.values(),
+                )
+            )
 
     logger.debug("Found these ingest pipelines:")
     for ingest_pipeline in ingest_pipelines:
@@ -57,7 +60,6 @@ def call_run(config_file: str, **kwargs):
     for ingest_pipeline in ingest_pipelines:
         logger.debug(f"\t{ingest_pipeline._key()}")
 
-
     logger.debug("Found these query pipelines:")
     for query_pipeline in query_pipelines:
         logger.debug(f"\t{query_pipeline._key()}")
@@ -67,7 +69,6 @@ def call_run(config_file: str, **kwargs):
     logger.debug("Narrowed down to these query pipelines:")
     for query_pipeline in query_pipelines:
         logger.debug(f"\t{query_pipeline._key()}")
-
 
     for ingest_pipeline in ingest_pipelines:
         ingest_pipeline.ingest()

@@ -1,11 +1,12 @@
-import inspect
 import importlib.util
+import inspect
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
 from ragulate.datasets import BaseDataset
 
 from ..logging_config import logger
+
 
 # Function to dynamically load a module
 def load_module(file_path, name):
@@ -14,21 +15,30 @@ def load_module(file_path, name):
     spec.loader.exec_module(module)
     return module
 
+
 def get_method(script_path: str, pipeline_type: str, method_name: str):
     module = load_module(script_path, name=pipeline_type)
     return getattr(module, method_name)
+
 
 def get_method_params(method: Any) -> List[str]:
     signature = inspect.signature(method)
     return signature.parameters.keys()
 
-def get_ingredients(method_params: List[str], reserved_params: List[str], passed_ingredients: Dict[str, Any]) -> Dict[str, Any]:
+
+def get_ingredients(
+    method_params: List[str],
+    reserved_params: List[str],
+    passed_ingredients: Dict[str, Any],
+) -> Dict[str, Any]:
     ingredients = {}
     for method_param in method_params:
         if method_param in reserved_params or method_param in ["kwargs"]:
             continue
         if method_param not in passed_ingredients:
-            raise ValueError(f"method param '{method_param}' doesn't exist in the ingredients")
+            raise ValueError(
+                f"method param '{method_param}' doesn't exist in the ingredients"
+            )
         ingredients[method_param] = passed_ingredients[method_param]
 
     return ingredients
@@ -47,13 +57,13 @@ class BasePipeline(ABC):
     @property
     @abstractmethod
     def PIPELINE_TYPE(self):
-        """ type of pipeline (ingest, query, cleanup)"""
+        """type of pipeline (ingest, query, cleanup)"""
         pass
 
     @property
     @abstractmethod
     def get_reserved_params(self) -> List[str]:
-        """ get the list of reserved parameter names for this pipeline type """
+        """get the list of reserved parameter names for this pipeline type"""
 
     def __init__(
         self,
@@ -71,11 +81,21 @@ class BasePipeline(ABC):
         self.datasets = datasets
 
         try:
-            self._method = get_method(script_path = self.script_path,pipeline_type= self.PIPELINE_TYPE,method_name= self.method_name)
-            self._method_params = get_method_params(method= self._method)
-            self.ingredients = get_ingredients(method_params=self._method_params, reserved_params= self.get_reserved_params, passed_ingredients= self._passed_ingredients)
+            self._method = get_method(
+                script_path=self.script_path,
+                pipeline_type=self.PIPELINE_TYPE,
+                method_name=self.method_name,
+            )
+            self._method_params = get_method_params(method=self._method)
+            self.ingredients = get_ingredients(
+                method_params=self._method_params,
+                reserved_params=self.get_reserved_params,
+                passed_ingredients=self._passed_ingredients,
+            )
         except BaseException as e:
-            logger.fatal(f"Issue loading recipe {self.recipe_name} on {self.script_path}/{self.method_name} with passed ingredients: {self._passed_ingredients}: {e}")
+            logger.fatal(
+                f"Issue loading recipe {self.recipe_name} on {self.script_path}/{self.method_name} with passed ingredients: {self._passed_ingredients}: {e}"
+            )
             exit(1)
 
     def get_method(self):
@@ -101,4 +121,3 @@ class BasePipeline(ABC):
 
     def __hash__(self):
         return hash(self._key())
-

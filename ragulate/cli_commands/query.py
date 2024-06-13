@@ -68,7 +68,9 @@ def setup_query(subparsers):
     ):
         datasets = [find_dataset(name=name) for name in dataset]
 
-        ingredients = convert_vars_to_ingredients(var_names=var_name, var_values=var_value)
+        ingredients = convert_vars_to_ingredients(
+            var_names=var_name, var_values=var_value
+        )
 
         query_pipeline = QueryPipeline(
             recipe_name=name,

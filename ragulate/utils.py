@@ -1,8 +1,8 @@
 import re
+from typing import Any, Dict, List
 
 from trulens_eval import Tru
 
-from typing import Any, Dict, List
 
 def get_tru(recipe_name: str) -> Tru:
     Tru.RETRY_FAILED_SECONDS = 60
@@ -11,11 +11,15 @@ def get_tru(recipe_name: str) -> Tru:
         database_url=f"sqlite:///{recipe_name}.sqlite", database_redact_keys=True
     )  # , name=name)
 
-def convert_vars_to_ingredients(var_names: List[str], var_values: List[str]) -> Dict[str, Any]:
+
+def convert_vars_to_ingredients(
+    var_names: List[str], var_values: List[str]
+) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
     for i, name in enumerate(var_names):
         params[name] = convert_string(var_values[i])
     return params
+
 
 def convert_string(s):
     s = s.strip()

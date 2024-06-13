@@ -1,88 +1,70 @@
 import unittest
 
-from ragulate.config.config_schema_0_1 import ConfigSchema_0_1
 from ragulate.config.config_parser import ConfigParser
+from ragulate.config.config_schema_0_1 import ConfigSchema_0_1
+
 
 class TestConfigValidation(unittest.TestCase):
 
     def test_full_config(self):
         config = {
-            'version': 0.1,
-            'steps': {
-                'ingest': [
+            "version": 0.1,
+            "steps": {
+                "ingest": [
                     {
-                        'name': 'chunk_size_ingest',
-                        'script': 'chunk_size_experiment.py',
-                        'method': 'ingest'
+                        "name": "chunk_size_ingest",
+                        "script": "chunk_size_experiment.py",
+                        "method": "ingest",
                     }
                 ],
-                'query': [
+                "query": [
                     {
-                        'name': 'chunk_size_query',
-                        'script': 'chunk_size_experiment.py',
-                        'method': 'query'
+                        "name": "chunk_size_query",
+                        "script": "chunk_size_experiment.py",
+                        "method": "query",
                     }
                 ],
-                'cleanup': [
+                "cleanup": [
                     {
-                        'name': 'chunk_size_cleanup',
-                        'script': 'chunk_size_experiment.py',
-                        'method': 'cleanup'
+                        "name": "chunk_size_cleanup",
+                        "script": "chunk_size_experiment.py",
+                        "method": "cleanup",
                     }
-                ]
+                ],
             },
-            'recipes': [
+            "recipes": [
                 {
-                    'name': 'chunk_size_500',
-                    'ingest': 'chunk_size_ingest',
-                    'query': 'chunk_size_query',
-                    'cleanup': 'chunk_size_cleanup',
-                    'ingredients': [
-                        {'chunk_size': 500}
-                    ]
+                    "name": "chunk_size_500",
+                    "ingest": "chunk_size_ingest",
+                    "query": "chunk_size_query",
+                    "cleanup": "chunk_size_cleanup",
+                    "ingredients": [{"chunk_size": 500}],
                 },
                 {
-                    'name': 'chunk_size_1000',
-                    'ingest': 'chunk_size_ingest',
-                    'query': 'chunk_size_query',
-                    'cleanup': 'chunk_size_cleanup',
-                    'ingredients': [
-                        {'chunk_size': 1000}
-                    ]
-                }
+                    "name": "chunk_size_1000",
+                    "ingest": "chunk_size_ingest",
+                    "query": "chunk_size_query",
+                    "cleanup": "chunk_size_cleanup",
+                    "ingredients": [{"chunk_size": 1000}],
+                },
             ],
-            'datasets': [
-                {
-                    'name': 'blockchain_solana',
-                    'kind': 'llama'
-                },
-                {
-                    'name': 'braintrust_coda_help_desk',
-                    'kind': 'llama'
-                }
+            "datasets": [
+                {"name": "blockchain_solana", "kind": "llama"},
+                {"name": "braintrust_coda_help_desk", "kind": "llama"},
             ],
-            'eval_llms': [
+            "eval_llms": [
                 {
-                    'vendor': 'open_ai',
-                    'model': 'gpt3.5-turbo',
-                    'name': 'gpt3.5',
-                    'default': True
+                    "vendor": "open_ai",
+                    "model": "gpt3.5-turbo",
+                    "name": "gpt3.5",
+                    "default": True,
                 },
-                {
-                    'name': 'llama3',
-                    'vendor': 'huggingface',
-                    'model': 'llama3'
-                }
+                {"name": "llama3", "vendor": "huggingface", "model": "llama3"},
             ],
-            'metrics': {
-                'groundedness': {
-                    'enabled': True
-                },
-                'answer_correctness': {
-                    'enabled': True,
-                    'eval_llm': 'llama3'
-                }
-            }
+            "metrics": {
+                "groundedness": {"enabled": True},
+                "answer_correctness": {"enabled": True, "eval_llm": "llama3"},
+            },
         }
         parser = ConfigParser(config_schema=ConfigSchema_0_1(), config=config)
 
@@ -109,44 +91,24 @@ class TestConfigValidation(unittest.TestCase):
         self.assertIn("chunk_size", chunk_size_1000.ingredients)
         self.assertEqual(chunk_size_1000.ingredients["chunk_size"], 1000)
 
-
     def test_minimal_config(self):
         config = {
-            'version': 0.1,
-            'steps': {
-                'query': [
-                    {
-                        'name': 'minimal',
-                        'script': 'minimal.py',
-                        'method': 'query'
-                    }
+            "version": 0.1,
+            "steps": {
+                "query": [
+                    {"name": "minimal", "script": "minimal.py", "method": "query"}
                 ],
             },
-            'recipes': [
-                {
-                    'query': 'minimal',
-                    'ingredients': [
-                        {'chunk_size': 500}
-                    ]
-                },
-                {
-                    'query': 'minimal',
-                    'ingredients': [
-                        {'chunk_size': 1000}
-                    ]
-                },
+            "recipes": [
+                {"query": "minimal", "ingredients": [{"chunk_size": 500}]},
+                {"query": "minimal", "ingredients": [{"chunk_size": 1000}]},
             ],
-            'datasets': [
-                'blockchain_solana',
-                'other_dataset'
+            "datasets": ["blockchain_solana", "other_dataset"],
+            "eval_llms": ["gpt3.5-turbo"],
+            "metrics": [
+                "groundedness",
+                "answer_correctness",
             ],
-            'eval_llms': [
-                'gpt3.5-turbo'
-            ],
-            'metrics': [
-                'groundedness',
-                'answer_correctness',
-            ]
         }
         parser = ConfigParser(config_schema=ConfigSchema_0_1(), config=config)
 
