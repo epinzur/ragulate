@@ -1,6 +1,6 @@
 from typing import List
 
-from ragulate.datasets import load_datasets
+from ragulate.datasets import find_dataset
 from ragulate.pipelines import QueryPipeline
 
 from ..utils import convert_vars_to_ingredients
@@ -66,7 +66,7 @@ def setup_query(subparsers):
         dataset: List[str],
         **kwargs,
     ):
-        datasets = load_datasets(dataset_names=dataset)
+        datasets = [find_dataset(name=name) for name in dataset]
 
         ingredients = convert_vars_to_ingredients(var_names=var_name, var_values=var_value)
 

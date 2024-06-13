@@ -1,5 +1,7 @@
 from ragulate.config import ConfigParser
 from ragulate.pipelines import IngestPipeline, QueryPipeline
+from ragulate.datasets import BaseDataset, LlamaDataset
+
 from ..analysis import Analysis
 
 from typing import List
@@ -34,7 +36,7 @@ def call_run(config_file: str, **kwargs):
                 script_path=recipe.ingest.script,
                 method_name=recipe.ingest.method,
                 ingredients=recipe.ingredients,
-                datasets=[],
+                datasets=config.datasets.values(),
             ))
         if recipe.query is not None:
             query_pipelines.append(QueryPipeline(
@@ -42,7 +44,7 @@ def call_run(config_file: str, **kwargs):
                 script_path=recipe.query.script,
                 method_name=recipe.query.method,
                 ingredients=recipe.ingredients,
-                datasets=[],
+                datasets=config.datasets.values(),
             ))
 
     logger.debug("Found these ingest pipelines:")
@@ -77,4 +79,3 @@ def call_run(config_file: str, **kwargs):
 
     analysis = Analysis()
     analysis.compare(recipes=recipe_names)
-

@@ -1,4 +1,3 @@
-
 from .config_parser import ConfigParser
 
 __all__ = [

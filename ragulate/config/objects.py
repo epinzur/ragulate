@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from typing import Any, Dict
+from ragulate.datasets import BaseDataset
 
 class Step(BaseModel):
     name: str
@@ -15,4 +16,8 @@ class Recipe(BaseModel):
     ingredients: Dict[str, Any]
 
 class Config(BaseModel):
+    class Config:
+        arbitrary_types_allowed=True
+
     recipes: Dict[str, Recipe] = {}
+    datasets: Dict[str, BaseDataset] = {}

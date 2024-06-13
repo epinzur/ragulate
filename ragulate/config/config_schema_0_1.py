@@ -4,6 +4,7 @@ from .objects import Config, Recipe, Step
 from .utils import dict_to_string
 
 from .base_config_schema import BaseConfigSchema
+from ragulate.datasets import BaseDataset, find_dataset, get_dataset
 
 class ConfigSchema_0_1(BaseConfigSchema):
     def version(self):
@@ -175,12 +176,16 @@ class ConfigSchema_0_1(BaseConfigSchema):
                                             ingredients=ingredients,
                                             )
 
-        return Config(recipes=recipes)
+            datasets: Dict[str, BaseDataset] = {}
 
+            for doc_dataset in document.get('datasets', []):
+                if isinstance(doc_dataset, str):
+                    datasets[doc_dataset] = find_dataset(name=doc_dataset)
+                else:
+                    doc_dataset_name = doc_dataset.get('name', None)
+                    doc_dataset_kind = doc_dataset.get('kind', None)
+                    if doc_dataset_name is None or doc_dataset_kind is None:
+                        raise ValueError("datasets must be specified with `name` and `kind`")
+                    datasets[doc_dataset_name] = get_dataset(name=doc_dataset_name, kind=doc_dataset_kind)
 
-
-
-
-
-
-
+        return Config(recipes=recipes, datasets=datasets)

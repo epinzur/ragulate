@@ -53,8 +53,6 @@ class QueryPipeline(BasePipeline):
             ingredients=ingredients,
             datasets=datasets,
         )
-        self._tru = get_tru(recipe_name=recipe_name)
-        self._tru.reset_database()
 
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -73,6 +71,8 @@ class QueryPipeline(BasePipeline):
         self.stop_evaluation("sigint")
 
     def start_evaluation(self):
+        self._tru = get_tru(recipe_name=self.recipe_name)
+        self._tru.reset_database()
         self._tru.start_evaluator(disable_tqdm=True)
         self._evaluation_running = True
 
@@ -82,6 +82,7 @@ class QueryPipeline(BasePipeline):
                 logger.debug(f"Stopping evaluation from: {loc}")
                 self._tru.stop_evaluator()
                 self._evaluation_running = False
+                self._tru.delete_singleton()
             except Exception as e:
                 logger.error(f"issue stopping evaluator: {e}")
             finally:
