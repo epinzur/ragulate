@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List
 
 from langchain_astradb import AstraDBVectorStore
 from langchain_community.document_loaders import UnstructuredFileLoader

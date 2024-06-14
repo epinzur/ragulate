@@ -47,14 +47,14 @@ pip install ragulate
   any other variables that you will pass during your experimentation. The method should ingest the passed
   file into your vector store.
 
-   See the `ingest()` method in [experiment_chunk_size_and_k.py](experiment_chunk_size_and_k.py) as an example.
+   See the `ingest()` method in [open_ai_chunk_size_and_k.py](open_ai_chunk_size_and_k.py) as an example.
    This method configures an ingest pipeline using the parameter `chunk_size` and ingests the file passed.
 
 1. Wrap your query pipeline in a single python method, and return it. The method should have parameters for
   any variables that you will pass during your experimentation. Currently only LangChain LCEL query pipelines
   are supported.
 
-   See the `query()` method in [experiment_chunk_size_and_k.py](experiment_chunk_size_and_k.py) as an example.
+   See the `query()` method in [open_ai_chunk_size_and_k.py](open_ai_chunk_size_and_k.py) as an example.
    This method returns a LangChain LCEL pipeline configured by the parameters `chunk_size` and `k`.
 
 Note: It is helpful to have a `**kwargs` param in your pipeline method definitions, so that if extra params
@@ -81,7 +81,7 @@ commands:
 
 ### Example
 
-For the examples below, we will use the example experiment [experiment_chunk_size_and_k.py](experiment_chunk_size_and_k.py)
+For the examples below, we will use the example experiment [open_ai_chunk_size_and_k.py](open_ai_chunk_size_and_k.py)
 and see how the RAG metrics change for changes in `chunk_size` and `k` (number of documents retrieved).
 
 1. Download a dataset. See available datasets here: https://llamahub.ai/?tab=llama_datasets
@@ -98,12 +98,12 @@ and see how the RAG metrics change for changes in `chunk_size` and `k` (number o
     Examples:
     * Ingest with `chunk_size=500`:
       ```
-      ragulate ingest -n chunk_size_500 -s experiment_chunk_size_and_k.py -m ingest \
+      ragulate ingest -n chunk_size_500 -s open_ai_chunk_size_and_k.py -m ingest \
       --var-name chunk_size --var-value 500 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
     * Ingest with `chunk_size=1000`:
       ```
-      ragulate ingest -n chunk_size_1000 -s experiment_chunk_size_and_k.py -m ingest \
+      ragulate ingest -n chunk_size_1000 -s open_ai_chunk_size_and_k.py -m ingest \
       --var-name chunk_size --var-value 1000 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
@@ -112,25 +112,25 @@ and see how the RAG metrics change for changes in `chunk_size` and `k` (number o
     Examples:
     * Query with `chunk_size=500` and `k=2`
       ```
-      ragulate query -n chunk_size_500_k_2 -s experiment_chunk_size_and_k.py -m query_pipeline \
+      ragulate query -n chunk_size_500_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
       --var-name chunk_size --var-value 500  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
     * Query with `chunk_size=1000` and `k=2`
       ```
-      ragulate query -n chunk_size_1000_k_2 -s experiment_chunk_size_and_k.py -m query_pipeline \
+      ragulate query -n chunk_size_1000_k_2 -s open_ai_chunk_size_and_k.py -m query_pipeline \
       --var-name chunk_size --var-value 1000  --var-name k --var-value 2 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
     * Query with `chunk_size=500` and `k=5`
       ```
-      ragulate query -n chunk_size_500_k_5 -s experiment_chunk_size_and_k.py -m query_pipeline \
+      ragulate query -n chunk_size_500_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
       --var-name chunk_size --var-value 500  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
     * Query with `chunk_size=1000` and `k=25`
       ```
-      ragulate query -n chunk_size_1000_k_5 -s experiment_chunk_size_and_k.py -m query_pipeline \
+      ragulate query -n chunk_size_1000_k_5 -s open_ai_chunk_size_and_k.py -m query_pipeline \
       --var-name chunk_size --var-value 1000  --var-name k --var-value 5 --dataset BraintrustCodaHelpDesk --dataset BlockchainSolana
       ```
 
