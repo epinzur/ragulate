@@ -108,7 +108,7 @@ class QueryPipeline(BasePipeline):
         params = self.get_params()
 
         pipeline = query_method(**params)
-        llm_provider = OpenAI()
+        llm_provider = OpenAI(model_engine="gpt-3.5-turbo")
 
         feedbacks = Feedbacks(llm_provider=llm_provider, pipeline=pipeline)
 
@@ -148,6 +148,8 @@ class QueryPipeline(BasePipeline):
                     with recorder:
                         pipeline.invoke(query)
                 except Exception as e:
+                    # TODO: figure out why the logger isn't working after tru-lens starts. For now use print()
+                    print(f"ERROR: Query: '{query}' caused exception, skipping. Exception {e}")
                     logger.error(f"Query: '{query}' caused exception, skipping.")
                 finally:
                     self.update_progress(query_change=1)
