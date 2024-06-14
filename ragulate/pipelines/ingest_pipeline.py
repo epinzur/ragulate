@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any, Dict
 
 from tqdm import tqdm
@@ -24,4 +25,7 @@ class IngestPipeline(BasePipeline):
             source_files.extend(dataset.get_source_file_paths())
 
         for source_file in tqdm(source_files):
-            ingest_method(file_path=source_file, **params)
+            if asyncio.iscoroutinefunction(ingest_method):
+                asyncio.run(ingest_method(file_path=source_file, **params))
+            else:
+                ingest_method(file_path=source_file, **params)

@@ -149,7 +149,9 @@ class QueryPipeline(BasePipeline):
                         pipeline.invoke(query)
                 except Exception as e:
                     # TODO: figure out why the logger isn't working after tru-lens starts. For now use print()
-                    print(f"ERROR: Query: '{query}' caused exception, skipping. Exception {e}")
+                    print(
+                        f"ERROR: Query: '{query}' caused exception, skipping. Exception {e}"
+                    )
                     logger.error(f"Query: '{query}' caused exception, skipping.")
                 finally:
                     self.update_progress(query_change=1)
