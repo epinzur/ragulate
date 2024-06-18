@@ -53,6 +53,18 @@ def setup_query(subparsers):
         action="append",
     )
     query_parser.add_argument(
+        "--sample",
+        type=str,
+        help=("Allows for running only a sample of queries, can choose percentage or number of queries."),
+        action="append",
+    )
+    query_parser.add_argument(
+        "--seed",
+        type=str,
+        help=("Seed for random generator, to ensure reproducibility"),
+        action="append",
+    )
+    query_parser.add_argument(
         "--llm_provider",
         type=str,
         help=("The name of the llm Provider"),
@@ -61,9 +73,9 @@ def setup_query(subparsers):
 
     )
     query_parser.add_argument(
-        "--model_name",
+        "--model|deployment_name",
         type=str,
-        help=("The name of the llm to use"),
+        help=("The name of the llm/deployment/chain to use"),
         action="append"
     )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
@@ -75,6 +87,8 @@ def setup_query(subparsers):
         var_name: List[str],
         var_value: List[str],
         dataset: List[str],
+        sample: str,
+        seed: str,
         llm_provider: str,
         model_name: str,
         **kwargs,
@@ -88,6 +102,8 @@ def setup_query(subparsers):
             var_names=var_name,
             var_values=var_value,
             datasets=datasets,
+            sample=sample,
+            seed=seed,
             llm_provider=llm_provider,
             model_name=model_name
         )

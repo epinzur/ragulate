@@ -14,6 +14,8 @@ from ..utils import get_tru
 from .base_pipeline import BasePipeline
 from .feedbacks import Feedbacks
 
+import random
+import numpy as np
 
 class QueryPipeline(BasePipeline):
     _sigint_received = False
@@ -37,6 +39,8 @@ class QueryPipeline(BasePipeline):
         var_names: List[str],
         var_values: List[str],
         datasets: List[BaseDataset],
+        sample: str = None,
+        seed: str = '0',
         llm_provider: str = OpenAI,
         model_name: Optional[str] = None,
         **kwargs,
@@ -51,8 +55,12 @@ class QueryPipeline(BasePipeline):
         )
         self._tru = get_tru(recipe_name=recipe_name)
         self._tru.reset_database()
-        self.llm_provider = llm_provider
-        self.model_name=model_name
+        self._llm_provider = llm_provider
+        self._model_name=model_name
+        self._sample = int(sample) if sample else None
+        self._seed = int(seed) if seed else 0
+        random.seed(self._seed)
+        np.random.seed(self._seed)
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
@@ -124,20 +132,32 @@ class QueryPipeline(BasePipeline):
                 raise ValueError(f"Unsupported provider: {provider_name}")
         else:
             if provider_name == 'OpenAI':
-                return OpenAI(model_name)
+                return OpenAI(model_engine=model_name)
             elif provider_name == 'AzureOpenAI':
-                return AzureOpenAI(model_name)
+                return AzureOpenAI(deployment_name=model_name)
             elif provider_name == 'Bedrock':
-                return Bedrock(model_name)
+                return Bedrock(model_id=model_name)
             elif provider_name == 'LiteLLM':
-                return LiteLLM(model_name)
+                return LiteLLM(model_engine=model_name)
             elif provider_name == 'Langchain':
-                return Langchain(model_name)
+                return Langchain(chain=model_name)
             elif provider_name == 'Huggingface':
-                return Huggingface(model_name)
+                return Huggingface(name=model_name)
             else:
                 raise ValueError(f"Unsupported provider: {provider_name}")
+    
 
+    def load_and_sample_queries(self, dataset):
+        queries = dataset.get_queries()
+        golden_set = dataset.get_golden_set()
+
+        if self._sample:
+            sample_indices = np.random.choice(len(queries), self._sample, replace=False)
+            sampled_queries = [queries[i] for i in sample_indices]
+            sampled_golden_set = [golden_set[i] for i in sample_indices]
+            return sampled_queries, sampled_golden_set
+        return queries, golden_set
+    
     def query(self):
         query_method = self.get_method(kind="query")
         params = self.get_params()
@@ -158,7 +178,9 @@ class QueryPipeline(BasePipeline):
         )
 
         self._progress = tqdm(total=(self._total_queries + self._total_feedbacks))
-
+        
+        
+        
         for dataset_name in self._queries:
             feedback_functions = [
                 feedbacks.answer_correctness(
@@ -175,17 +197,36 @@ class QueryPipeline(BasePipeline):
                 feedbacks=feedback_functions,
                 feedback_mode=FeedbackMode.DEFERRED,
             )
+            
+            if self._sample:
+                
+                if self._sample < 1:
+                    self._sample = self._sample*len(self._queries[dataset_name])
+                sample_indices = np.random.choice(len(self._queries), self._sample, replace=False)
+                sampled_queries = [self._queries[i] for i in sample_indices]
 
-            for query in self._queries[dataset_name]:
-                if self._sigint_received:
-                    break
-                try:
-                    with recorder:
-                        pipeline.invoke(query)
-                except Exception as e:
-                    logger.error(f"Query: '{query}' caused exception, skipping.")
-                finally:
-                    self.update_progress(query_change=1)
+                for query in sampled_queries:
+                    if self._sigint_received:
+                        break
+                    try:
+                        with recorder:
+                            pipeline.invoke(query)
+                    except Exception as e:
+                        logger.error(f"Query: '{query}' caused exception, skipping.")
+                    finally:
+                        self.update_progress(query_change=1)
+            
+            else:
+                for query in self._queries[dataset_name]:
+                    if self._sigint_received:
+                        break
+                    try:
+                        with recorder:
+                            pipeline.invoke(query)
+                    except Exception as e:
+                        logger.error(f"Query: '{query}' caused exception, skipping.")
+                    finally:
+                        self.update_progress(query_change=1)
 
         while self._finished_feedbacks < self._total_feedbacks:
             if self._sigint_received:
