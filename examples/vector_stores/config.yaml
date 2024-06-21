@@ -1,0 +1,58 @@
+version: 0.1
+
+steps:
+  ingest:
+    - name: colbert_ingest
+      script: colbert.py
+      method: ingest
+    - name: openai_ingest
+      script: openai.py
+      method: ingest
+  query:
+    - name: colbert_query
+      script: colbert.py
+      method: query_pipeline
+    - name: openai_query
+      script: openai.py
+      method: query_pipeline
+
+recipes:
+  - ingest: colbert_ingest
+    query: colbert_query
+    ingredients:
+      - chunk_size: 256
+      - k: 5
+  - ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - vector_store: astradb
+      - chunk_size: 1024
+      - k: 5
+  - ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - vector_store: elastic
+      - chunk_size: 1024
+      - k: 5
+  - ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - vector_store: neo4j
+      - chunk_size: 1024
+      - k: 5
+  - ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - vector_store: redis
+      - chunk_size: 1024
+      - k: 5
+  - ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - vector_store: weaviate
+      - chunk_size: 1024
+      - k: 5
+
+datasets:
+  - name: BraintrustCodaHelpDesk
+    kind: llama
