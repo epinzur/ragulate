@@ -36,6 +36,7 @@ jobs:
         run: |
           echo "pyroject.toml:"
           cat pyproject.toml
+          poetry self add poetry-plugin-export
           poetry install
           poetry build
           poetry export -f requirements.txt --output requirements.txt

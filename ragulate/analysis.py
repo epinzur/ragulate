@@ -53,6 +53,8 @@ class Analysis:
     def output_plots_by_dataset(self, df: DataFrame, metrics: List[str]):
         recipes = sorted(df["recipe"].unique(), key=lambda x: x.lower())
         datasets = sorted(df["dataset"].unique(), key=lambda x: x.lower())
+        metrics = sorted(metrics)
+        metrics.reverse()
 
         # generate an array of rainbow colors by fixing the saturation and lightness of the HSL
         # representation of color and marching around the hue.

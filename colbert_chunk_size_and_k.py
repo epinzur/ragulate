@@ -27,12 +27,12 @@ database_id = os.getenv("ASTRA_DB_ID")
 keyspace = "colbert"
 
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("unstructured").setLevel(logging.ERROR)
 logging.getLogger("cassandra").setLevel(logging.ERROR)
 logging.getLogger("http").setLevel(logging.ERROR)
 logging.getLogger("httpx").setLevel(logging.ERROR)
-
 
 
 def get_embedding_model(chunk_size: int) -> ColbertEmbeddingModel:

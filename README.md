@@ -2,14 +2,14 @@
 
 A tool for evaluating RAG pipelines
 
-![ragulate_logo](images/logo_smaller.png)
+![ragulate_logo](https://raw.githubusercontent.com/epinzur/ragulate/main/images/logo_smaller.png)
 
 ## The Metrics
 
 The RAGulate currently reports 4 relevancy metrics: Answer Correctness, Answer Relevance, Context Relevance, and Groundedness.
 
 
-![metrics_diagram](images/metrics.png)
+![metrics_diagram](https://raw.githubusercontent.com/epinzur/ragulate/main/images/metrics.png)
 
 * Answer Correctness
   * How well does the generated answer match the ground-truth answer?
@@ -28,7 +28,7 @@ The RAGulate currently reports 4 relevancy metrics: Answer Correctness, Answer R
 
 The tool outputs results as images like this:
 
-![example_output](images/example.png)
+![example_output](https://raw.githubusercontent.com/epinzur/ragulate/main/images/example.png)
 
 These images show distribution box plots of the metrics for different test runs.
 
