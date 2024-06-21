@@ -1,9 +1,10 @@
 from .base_dataset import BaseDataset
 from .llama_dataset import LlamaDataset
-from .utils import load_datasets
+from .utils import find_dataset, get_dataset
 
 __all__ = [
     "BaseDataset",
     "LlamaDataset",
-    "load_datasets",
+    "find_dataset",
+    "get_dataset",
 ]

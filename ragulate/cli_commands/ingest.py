@@ -1,7 +1,9 @@
 from typing import List
 
-from ragulate.datasets import load_datasets
+from ragulate.datasets import find_dataset
 from ragulate.pipelines import IngestPipeline
+
+from ..utils import convert_vars_to_ingredients
 
 
 def setup_ingest(subparsers):
@@ -64,14 +66,18 @@ def setup_ingest(subparsers):
         dataset: List[str],
         **kwargs,
     ):
-        datasets = load_datasets(dataset_names=dataset)
+
+        datasets = [find_dataset(name=name) for name in dataset]
+
+        ingredients = convert_vars_to_ingredients(
+            var_names=var_name, var_values=var_value
+        )
 
         ingest_pipeline = IngestPipeline(
             recipe_name=name,
             script_path=script_path,
             method_name=method_name,
-            var_names=var_name,
-            var_values=var_value,
+            ingredients=ingredients,
             datasets=datasets,
         )
         ingest_pipeline.ingest()
