@@ -1,3 +1,5 @@
+# this must be imported first for dynamic module loading to function properly
+import setuptools  # isort: skip
 import argparse
 
 from dotenv import load_dotenv
