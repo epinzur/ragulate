@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
 from trulens_eval.feedback.provider import OpenAI
-from trulens_eval.schema.feedback import FeedbackMode, FeedbackResultStatus
+from trulens_eval.schema import FeedbackResultStatus, FeedbackMode
 
 from ragulate.datasets import BaseDataset
 
@@ -73,7 +73,7 @@ class QueryPipeline(BasePipeline):
     def start_evaluation(self):
         self._tru = get_tru(recipe_name=self.recipe_name)
         self._tru.reset_database()
-        self._tru.start_evaluator(disable_tqdm=True)
+        self._tru.start_evaluator()
         self._evaluation_running = True
 
     def stop_evaluation(self, loc: str):
@@ -100,7 +100,6 @@ class QueryPipeline(BasePipeline):
             "r": status.get(FeedbackResultStatus.RUNNING, 0),
             "w": status.get(FeedbackResultStatus.NONE, 0),
             "f": status.get(FeedbackResultStatus.FAILED, 0),
-            "s": status.get(FeedbackResultStatus.SKIPPED, 0),
         }
         self._progress.set_postfix(postfix)
 

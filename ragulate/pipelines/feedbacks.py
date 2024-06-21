@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 import numpy as np
 from trulens_eval import Feedback
 from trulens_eval.app import App
-from trulens_eval.feedback import GroundTruthAgreement
+from trulens_eval.feedback import Groundedness, GroundTruthAgreement
 from trulens_eval.feedback.provider.base import LLMProvider
 from trulens_eval.utils.serial import Lens
 
@@ -17,19 +17,20 @@ class Feedbacks:
         self._llm_provider = llm_provider
 
     def groundedness(self) -> Feedback:
+        grounded = Groundedness(groundedness_provider=self._llm_provider)
         return (
-            Feedback(
-                self._llm_provider.groundedness_measure_with_cot_reasons,
-                name="groundedness",
-            )
-            .on(self._context.collect())  # collect context chunks into a list
-            .on_output()
+                Feedback(grounded.groundedness_measure_with_cot_reasons,
+                        name="groundedness")
+                .on(self._context.collect()).on_output()
+                .aggregate(grounded.grounded_statements_aggregator)
         )
 
     def answer_relevance(self) -> Feedback:
-        return Feedback(
-            self._llm_provider.relevance_with_cot_reasons, name="answer_relevance"
-        ).on_input_output()
+        return (
+        Feedback(self._llm_provider.relevance_with_cot_reasons,
+                 name="answer_relevance")
+        .on_input_output()
+    )
 
     def context_relevance(self) -> Feedback:
         return (

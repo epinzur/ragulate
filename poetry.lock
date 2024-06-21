@@ -2471,7 +2471,6 @@ files = [
 numpy = [
     {version = ">=1.22.4", markers = "python_version < \"3.11\""},
     {version = ">=1.23.2", markers = "python_version == \"3.11\""},
-    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
 ]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
@@ -2600,17 +2599,6 @@ typing = ["typing-extensions"]
 xmp = ["defusedxml"]
 
 [[package]]
-name = "pip"
-version = "24.0"
-description = "The PyPA recommended tool for installing Python packages."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pip-24.0-py3-none-any.whl", hash = "sha256:ba0d021a166865d2265246961bec0152ff124de910c5cc39f1156ce3fa7c69dc"},
-    {file = "pip-24.0.tar.gz", hash = "sha256:ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2"},
-]
-
-[[package]]
 name = "platformdirs"
 version = "4.2.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
@@ -2689,34 +2677,6 @@ files = [
     {file = "protobuf-4.25.3-py3-none-any.whl", hash = "sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9"},
     {file = "protobuf-4.25.3.tar.gz", hash = "sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c"},
 ]
-
-[[package]]
-name = "psutil"
-version = "5.9.8"
-description = "Cross-platform lib for process and system monitoring in Python."
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
-files = [
-    {file = "psutil-5.9.8-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:26bd09967ae00920df88e0352a91cff1a78f8d69b3ecabbfe733610c0af486c8"},
-    {file = "psutil-5.9.8-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:05806de88103b25903dff19bb6692bd2e714ccf9e668d050d144012055cbca73"},
-    {file = "psutil-5.9.8-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:611052c4bc70432ec770d5d54f64206aa7203a101ec273a0cd82418c86503bb7"},
-    {file = "psutil-5.9.8-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:50187900d73c1381ba1454cf40308c2bf6f34268518b3f36a9b663ca87e65e36"},
-    {file = "psutil-5.9.8-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d"},
-    {file = "psutil-5.9.8-cp27-none-win32.whl", hash = "sha256:36f435891adb138ed3c9e58c6af3e2e6ca9ac2f365efe1f9cfef2794e6c93b4e"},
-    {file = "psutil-5.9.8-cp27-none-win_amd64.whl", hash = "sha256:bd1184ceb3f87651a67b2708d4c3338e9b10c5df903f2e3776b62303b26cb631"},
-    {file = "psutil-5.9.8-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:aee678c8720623dc456fa20659af736241f575d79429a0e5e9cf88ae0605cc81"},
-    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8cb6403ce6d8e047495a701dc7c5bd788add903f8986d523e3e20b98b733e421"},
-    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d06016f7f8625a1825ba3732081d77c94589dca78b7a3fc072194851e88461a4"},
-    {file = "psutil-5.9.8-cp36-cp36m-win32.whl", hash = "sha256:7d79560ad97af658a0f6adfef8b834b53f64746d45b403f225b85c5c2c140eee"},
-    {file = "psutil-5.9.8-cp36-cp36m-win_amd64.whl", hash = "sha256:27cc40c3493bb10de1be4b3f07cae4c010ce715290a5be22b98493509c6299e2"},
-    {file = "psutil-5.9.8-cp37-abi3-win32.whl", hash = "sha256:bc56c2a1b0d15aa3eaa5a60c9f3f8e3e565303b465dbf57a1b730e7a2b9844e0"},
-    {file = "psutil-5.9.8-cp37-abi3-win_amd64.whl", hash = "sha256:8db4c1b57507eef143a15a6884ca10f7c73876cdf5d51e713151c1236a0e68cf"},
-    {file = "psutil-5.9.8-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:d16bbddf0693323b8c6123dd804100241da461e41d6e332fb0ba6058f630f8c8"},
-    {file = "psutil-5.9.8.tar.gz", hash = "sha256:6be126e3225486dff286a8fb9a06246a5253f4c7c53b475ea5f5ac934e64194c"},
-]
-
-[package.extras]
-test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 
 [[package]]
 name = "pyarrow"
@@ -3533,13 +3493,13 @@ snowflake = ["snowflake-connector-python (>=2.8.0)", "snowflake-snowpark-python 
 
 [[package]]
 name = "streamlit-aggrid"
-version = "0.3.4"
+version = "0.3.4.post3"
 description = "Streamlit component implementation of ag-grid"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "streamlit-aggrid-0.3.4.tar.gz", hash = "sha256:d4b776e4e7c2a91808744873843c8236065e263c22cc39e7267383ccc81486a3"},
-    {file = "streamlit_aggrid-0.3.4-py3-none-any.whl", hash = "sha256:586cb6096432bad7390d1dbb0eb4414c95272ae539a2c87f96c6c7851459f8fb"},
+    {file = "streamlit-aggrid-0.3.4.post3.tar.gz", hash = "sha256:0cb9332199e7735289a673efabc913e1a3466cc188bc025bec2c50c32ab1989a"},
+    {file = "streamlit_aggrid-0.3.4.post3-py3-none-any.whl", hash = "sha256:b909117eb90cfdb855b1c74e694e9ec97554c101baaafb7339eaf885d1f4e49c"},
 ]
 
 [package.dependencies]
@@ -3666,20 +3626,6 @@ files = [
 [package.dependencies]
 jinja2 = "*"
 streamlit = ">=1.2"
-
-[[package]]
-name = "streamlit-pills"
-version = "0.3.0"
-description = "💊 A Streamlit component to show clickable pills/badges"
-optional = false
-python-versions = ">=3.8,<4.0"
-files = [
-    {file = "streamlit-pills-0.3.0.tar.gz", hash = "sha256:47668ad4fd8c137b203ee1aec9d9d44ed8b2ff7ded9f586984f204be2eac772f"},
-    {file = "streamlit_pills-0.3.0-py3-none-any.whl", hash = "sha256:b66fdf7b1820c09b751a76ef1ae01ab93221d0c2c2d1cd489b711b9afaae0513"},
-]
-
-[package.dependencies]
-streamlit = ">=1.12.0,<2.0.0"
 
 [[package]]
 name = "streamlit-toggle-switch"
@@ -3851,12 +3797,12 @@ telegram = ["requests"]
 
 [[package]]
 name = "trulens-eval"
-version = "0.31.0"
+version = "0.24.1"
 description = "Library to systematically track and evaluate LLM based applications."
 optional = false
-python-versions = "<3.13,>=3.8"
+python-versions = ">= 3.8, < 3.12"
 files = [
-    {file = "trulens_eval-0.31.0-py3-none-any.whl", hash = "sha256:93bc126c914b7beb04bfe6d0a1ed3ab8f8b1d47ef8d7757bbdd901ea3d190d8d"},
+    {file = "trulens_eval-0.24.1-py3-none-any.whl", hash = "sha256:c73b9f50942fd5290dd00a691b67e1527ae09129e669e930b5461cad4e17d54d"},
 ]
 
 [package.dependencies]
@@ -3864,27 +3810,20 @@ alembic = ">=1.11.2"
 dill = ">=0.3.7"
 frozendict = ">=2.3.8"
 humanize = ">=4.6.0"
-langchain = ">=0.1.14"
-langchain-community = ">=0.0.38"
+langchain = ">=0.0.354"
 langchain-core = ">=0.1.6"
 merkle-json = ">=1.0.0"
 millify = ">=0.1.1"
 munch = ">=3.0.0"
 nest-asyncio = ">=1.5.8"
-nltk = ">=3.8.1"
 numpy = ">=1.23.5"
-packaging = ">=23.2"
-pip = ">=24.0"
-psutil = ">=5.9.8"
 pydantic = ">=2,<3"
 python-dotenv = ">=1.0.0"
 requests = ">=2.31.0"
-rich = ">=13.6.0"
 sqlalchemy = ">=2.0.19"
-streamlit = ">=1.32.2"
-streamlit-aggrid = "0.3.4"
-streamlit-extras = ">=0.4.0"
-streamlit-pills = ">=0.3.0"
+streamlit = ">=1.31.1"
+streamlit-aggrid = ">=0.3.4.post3"
+streamlit-extras = ">=0.2.7"
 tqdm = ">=4.66.1"
 typing-extensions = ">=4.9.0"
 typing-inspect = ">=0.8.0"
@@ -4193,5 +4132,5 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.10,<3.13"
-content-hash = "678a8e8edc4926462efbf5699598d6e14a4c281dbb5e37285257600a1871145a"
+python-versions = ">=3.10,<3.12"
+content-hash = "b99ef6dd19448733fd06b0538109f96a06a5c17a2d7c358399b4a9a2ff210c6d"

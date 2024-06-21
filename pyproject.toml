@@ -8,8 +8,8 @@ readme = "README.md"
 packages = [{include = "ragulate"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-trulens-eval = ">=0.31"
+python = ">=3.10,<3.12"
+trulens-eval = "0.24.1"
 kaleido = "0.2.1"
 inflection = "^0.5.1"
 llama-index-core = "^0.10.31"
