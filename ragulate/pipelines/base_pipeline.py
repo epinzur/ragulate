@@ -1,5 +1,6 @@
 import importlib.util
 import inspect
+import traceback
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
@@ -96,6 +97,7 @@ class BasePipeline(ABC):
             logger.fatal(
                 f"Issue loading recipe {self.recipe_name} on {self.script_path}/{self.method_name} with passed ingredients: {self._passed_ingredients}: {e}"
             )
+            traceback.print_exc()
             exit(1)
 
     def get_method(self):
