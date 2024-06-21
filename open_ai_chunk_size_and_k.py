@@ -1,4 +1,3 @@
-import logging
 import os
 
 from langchain_astradb import AstraDBVectorStore
@@ -26,12 +25,11 @@ def ingest(file_path: str, chunk_size: int, **kwargs):
     vector_store = get_vector_store(chunk_size=chunk_size)
 
     chunk_overlap = min(chunk_size / 4, min(chunk_size / 2, 64))
-    logging.info(f"Using chunk_overlap: {chunk_overlap} for chunk_size: {chunk_size}")
 
     text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         model_name=EMBEDDING_MODEL,
         chunk_size=chunk_size,
-        chunk_overlap=50,
+        chunk_overlap=chunk_overlap,
     )
 
     docs = UnstructuredFileLoader(
