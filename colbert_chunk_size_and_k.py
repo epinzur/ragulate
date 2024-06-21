@@ -22,14 +22,17 @@ LLM_MODEL = "gpt-3.5-turbo"
 
 batch_size = 640
 
-astra_token = os.getenv("ASTRA_DB_TOKEN_COLBERT2")
-database_id = os.getenv("ASTRA_DB_ID_COLBERT2")
-keyspace = "ragulate"
+astra_token = os.getenv("ASTRA_DB_TOKEN")
+database_id = os.getenv("ASTRA_DB_ID")
+keyspace = "colbert"
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("unstructured").setLevel(logging.ERROR)
 logging.getLogger("cassandra").setLevel(logging.ERROR)
+logging.getLogger("http").setLevel(logging.ERROR)
+logging.getLogger("httpx").setLevel(logging.ERROR)
+
 
 
 def get_embedding_model(chunk_size: int) -> ColbertEmbeddingModel:

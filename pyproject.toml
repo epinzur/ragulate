@@ -32,9 +32,10 @@ langchain-openai = "0.1.3"
 pytest = "^8.2.2"
 
 [build-system]
-requires = ["poetry-core", "setuptools>=42", "wheel", "pip"]
+requires = ["poetry-core", "wheel"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 ragulate = "ragulate.cli:main"
-test = "pytest"
+test_unit = "scripts.test_unit_runner:main"
+test_integration = "scripts.test_integration_runner:main"
