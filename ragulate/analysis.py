@@ -5,6 +5,10 @@ import pandas as pd
 import plotly.graph_objects as go
 from pandas import DataFrame
 from plotly.io import write_image
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
 from .utils import get_tru
 
@@ -51,56 +55,38 @@ class Analysis:
         return df_all, list(set(all_metrics))
 
     def output_plots_by_dataset(self, df: DataFrame, metrics: List[str]):
-        recipes = sorted(df["recipe"].unique(), key=lambda x: x.lower())
-        datasets = sorted(df["dataset"].unique(), key=lambda x: x.lower())
-        metrics = sorted(metrics)
-        metrics.reverse()
+        # Melt the DataFrame to long format
+        df_melted = pd.melt(df, id_vars=['record_id', 'recipe', 'dataset'],
+                    value_vars=['answer_correctness', 'answer_relevance', 'context_relevance', 'groundedness', 'latency'],
+                    var_name='metric', value_name='value')
 
-        # generate an array of rainbow colors by fixing the saturation and lightness of the HSL
-        # representation of color and marching around the hue.
-        c = [
-            "hsl(" + str(h) + ",50%" + ",50%)"
-            for h in np.linspace(0, 360, len(recipes) + 1)
-        ]
+        # Set the theme for the plot
+        sns.set_theme(style="darkgrid")
 
-        height = max((len(metrics) * len(recipes) * 20) + 150, 450)
+        # Custom function to set bin ranges
+        def custom_hist(data, **kws):
+            metric = data['metric'].iloc[0]
+            discrete = metric != "latency"
+            bin_range = (0,1) if discrete else None
+            sns.histplot(data, x='value', stat='percent', bins=10, binrange=bin_range, **kws)
 
-        for dataset in datasets:
-            fig = go.Figure()
-            test_index = 0
-            for recipe in recipes:
-                y = []
-                x = []
-                for metric in metrics:
-                    dx = df[metric][df["recipe"] == recipe][df["dataset"] == dataset]
-                    x.extend(dx)
-                    y.extend([metric] * len(dx))
+        # Create the FacetGrid
+        g = sns.FacetGrid(df_melted, col="metric", row="recipe", margin_titles=True, height=3, aspect=1, sharex="col")
 
-                fig.add_trace(
-                    go.Box(
-                        y=y,
-                        x=x,
-                        name=recipe,
-                        marker_color=c[test_index],
-                        visible=True,
-                    )
-                )
-                test_index += 1
+        # Map the custom histogram function to the FacetGrid
+        g.map_dataframe(custom_hist)
 
-            fig.update_traces(
-                orientation="h",
-                boxmean=True,
-                jitter=1,
-            )
-            fig.update_layout(boxmode="group", height=height, width=900)
-            fig.update_layout(
-                legend=dict(
-                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
-                )
-            )
-            fig.update_layout(yaxis_title="metric", xaxis_title="score")
+        for ax in g.axes.flat:
+            ax.set_ylim(0, 100)
 
-            write_image(fig, f"./{dataset}.png")
+        g.set_axis_labels("Value", "Percentage")
+
+        # Save the plot as a PNG file
+        g.savefig("grid_of_histograms.png")
+
+        # Close the plot to avoid displaying it
+        plt.close()
+
 
     def compare(self, recipes: List[str]):
         df, metrics = self.get_all_data(recipes=recipes)
