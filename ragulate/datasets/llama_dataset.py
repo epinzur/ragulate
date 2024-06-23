@@ -37,19 +37,29 @@ class LlamaDataset(BaseDataset):
         """downloads a dataset locally"""
         download_dir = self._get_dataset_path()
 
-        # to conform with naming scheme at LlamaHub
-        llama_dataset_class = self.name
-        if not llama_dataset_class.endswith("Dataset"):
-            llama_dataset_class = llama_dataset_class + "Dataset"
+        def download_by_name(name):
+            download.download_llama_dataset(
+                llama_dataset_class=name,
+                download_dir=download_dir,
+                llama_datasets_lfs_url=self._llama_datasets_lfs_url,
+                llama_datasets_source_files_tree_url=self._llama_datasets_source_files_tree_url,
+                show_progress=True,
+                load_documents=False,
+            )
 
-        download.download_llama_dataset(
-            llama_dataset_class=llama_dataset_class,
-            download_dir=download_dir,
-            llama_datasets_lfs_url=self._llama_datasets_lfs_url,
-            llama_datasets_source_files_tree_url=self._llama_datasets_source_files_tree_url,
-            show_progress=True,
-            load_documents=False,
-        )
+
+        # to conform with naming scheme at LlamaHub
+        name = self.name
+        try:
+            download_by_name(name=name)
+        except:
+            if not name.endswith("Dataset"):
+                try:
+                    download_by_name(name + "Dataset")
+                except:
+                    raise ValueError(f"Could not find {name} datset.")
+            else:
+                raise ValueError(f"Could not find {name} datset.")
 
         logger.info(f"Successfully downloaded {self.name} to {download_dir}")
 
