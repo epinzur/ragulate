@@ -164,6 +164,7 @@ cython_debug/
 
 # default dataset download location
 datasets/
+!ragulate/datasets/
 
 # database files
 *.sqlite
@@ -172,4 +173,5 @@ datasets/
 *.png
 !images/
 !images/*.png
+
 
