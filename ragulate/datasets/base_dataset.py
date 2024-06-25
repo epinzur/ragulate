@@ -58,23 +58,37 @@ class BaseDataset(ABC):
     def get_queries_and_golden_set(self) -> Tuple[List[str], List[Dict[str, str]]]:
         """gets a list of queries and golden_truth answers for a dataset"""
 
-    async def _download_file(self, session, url, temp_file_path):
-        async with session.get(url) as response:
-            file_size = int(response.headers.get('Content-Length', 0))
+    async def _download_file(
+        self, session: aiohttp.ClientSession, url: str, temp_file_path: str
+    ) -> None:
+        timeout = aiohttp.ClientTimeout(total=6000)
+        async with session.get(url, timeout=timeout) as response:
+            file_size = int(response.headers.get("Content-Length", 0))
             chunk_size = 1024
-            with tqdm(total=file_size, unit='B', unit_scale=True, desc=f'Downloading {url.split("/")[-1]}') as progress_bar:
-                async with aiofiles.open(temp_file_path, 'wb') as temp_file:
+            with tqdm(
+                total=file_size,
+                unit="B",
+                unit_scale=True,
+                desc=f'Downloading {url.split("/")[-1]}',
+            ) as progress_bar:
+                async with aiofiles.open(temp_file_path, "wb") as temp_file:
                     async for chunk in response.content.iter_chunked(chunk_size):
                         await temp_file.write(chunk)
                         progress_bar.update(len(chunk))
 
-    async def _decompress_file(self, temp_file_path, output_file_path):
+    async def _decompress_file(
+        self, temp_file_path: str, output_file_path: str
+    ) -> None:
         makedirs(path.dirname(output_file_path), exist_ok=True)
-        with open(temp_file_path, 'rb') as temp_file:
+        with open(temp_file_path, "rb") as temp_file:
             decompressed_size = 0
-            with bz2.BZ2File(temp_file, 'rb') as bz2_file:
-                async with aiofiles.open(output_file_path, 'wb') as output_file:
-                    with tqdm(unit='B', unit_scale=True, desc=f'Decompressing {output_file_path}') as progress_bar:
+            with bz2.BZ2File(temp_file, "rb") as bz2_file:
+                async with aiofiles.open(output_file_path, "wb") as output_file:
+                    with tqdm(
+                        unit="B",
+                        unit_scale=True,
+                        desc=f"Decompressing {output_file_path}",
+                    ) as progress_bar:
                         while True:
                             chunk = bz2_file.read(1024)
                             if not chunk:
@@ -83,7 +97,13 @@ class BaseDataset(ABC):
                             decompressed_size += len(chunk)
                             progress_bar.update(len(chunk))
 
-    async def _download_and_decompress(self, url, output_file_path):
+    async def _download_and_decompress(
+        self, url: str, output_file_path: str, force: bool
+    ) -> None:
+        if not force and path.exists(output_file_path):
+            print(f"File {output_file_path} already exists. Skipping download.")
+            return
+
         async with aiohttp.ClientSession() as session:
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 temp_file_path = temp_file.name
