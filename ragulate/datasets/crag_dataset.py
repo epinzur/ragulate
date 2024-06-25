@@ -39,7 +39,10 @@ class CragDataset(BaseDataset):
                 path.join(self.storage_path(), "parsed_documents.jsonl"),
                 path.join(self.storage_path(), "questions.jsonl"),
             ]
-            tasks = [self._download_and_decompress(url, output_file) for url, output_file in zip(urls, output_files)]
+            tasks = [
+                self._download_and_decompress(url, output_file)
+                for url, output_file in zip(urls, output_files)
+            ]
             asyncio.run(asyncio.gather(*tasks))
         else:
             raise NotImplementedError(f"Crag download not supported for {self.name}")
@@ -52,27 +55,27 @@ class CragDataset(BaseDataset):
         queries: List[str] = []
         golden_set: List[Dict[str, str]] = []
 
-        if len(self.subsets) == 0:
-            subset_kinds = self._subset_kinds
-        else:
-            subset_kinds = []
-            for subset in self.subsets:
-                if subset not in self._subset_kinds:
-                    raise ValueError(f"Subset: {subset} doesn't exist in dataset {self.name}. Choices are {self._subset_kinds}")
-                subset_kinds.append(subset)
+        for subset in self.subsets:
+            if subset not in self._subset_kinds:
+                raise ValueError(
+                    f"Subset: {subset} doesn't exist in dataset {self.name}. Choices are {self._subset_kinds}"
+                )
 
-        for subset in subset_kinds:
+        json_path = path.join(self.storage_path(), f"questions.jsonl")
+        with open(json_path, "r") as f:
+            for line in f:
+                data = json.loads(line.strip())
+                kind = data.get("question_type")
 
-            json_path = path.join(
-                self.storage_path(), f"{subset}.jsonl"
-            )
-            with open(json_path, "r") as f:
-                for line in f:
-                    data = json.loads(line.strip())
-                    query = data.get("query")
-                    answer = data.get("answer")
-                    if query is not None:
-                        queries.append(query)
-                        golden_set.append({"query": query, "response": answer})
+                if len(self.subsets) > 0 and kind not in self.subsets:
+                    continue
+
+                query = data.get("query")
+                answer = data.get("answer")
+                if query is not None and answer is not None:
+                    queries.append(query)
+                    golden_set.append({"query": query, "response": answer})
+
+        print(f"found {len(queries)} for subsets: {self.subsets}")
 
         return queries, golden_set

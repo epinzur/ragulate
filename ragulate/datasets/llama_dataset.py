@@ -23,7 +23,9 @@ class LlamaDataset(BaseDataset):
     ):
         super().__init__(dataset_name=dataset_name, root_storage_path=root_storage_path)
         self._llama_datasets_lfs_url: str = LLAMA_DATASETS_LFS_URL
-        self._llama_datasets_source_files_tree_url: str = LLAMA_DATASETS_SOURCE_FILES_GITHUB_TREE_URL
+        self._llama_datasets_source_files_tree_url: str = (
+            LLAMA_DATASETS_SOURCE_FILES_GITHUB_TREE_URL
+        )
 
     def sub_storage_path(self) -> str:
         return "llama"
@@ -47,7 +49,6 @@ class LlamaDataset(BaseDataset):
                 load_documents=False,
             )
 
-
         # to conform with naming scheme at LlamaHub
         name = self.name
         try:
@@ -65,16 +66,12 @@ class LlamaDataset(BaseDataset):
 
     def get_source_file_paths(self) -> List[str]:
         """gets a list of source file paths for for a dataset"""
-        source_path = path.join(
-            self._get_dataset_path(), "source_files"
-        )
+        source_path = path.join(self._get_dataset_path(), "source_files")
         return self.list_files_at_path(path=source_path)
 
     def get_queries_and_golden_set(self) -> Tuple[List[str], List[Dict[str, str]]]:
         """gets a list of queries and golden_truth answers for a dataset"""
-        json_path = path.join(
-            self._get_dataset_path(), "rag_dataset.json"
-        )
+        json_path = path.join(self._get_dataset_path(), "rag_dataset.json")
         with open(json_path, "r") as f:
             examples = json.load(f)["examples"]
             queries = [e["query"] for e in examples]

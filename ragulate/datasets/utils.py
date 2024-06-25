@@ -6,7 +6,7 @@ from .crag_dataset import CragDataset
 from .llama_dataset import LlamaDataset
 
 
-def find_dataset(name:str) -> BaseDataset:
+def find_dataset(name: str) -> BaseDataset:
     root_path = "datasets"
     name = name.lower()
     for kind in os.listdir(root_path):
@@ -21,7 +21,8 @@ def find_dataset(name:str) -> BaseDataset:
     """ searches for a downloaded dataset with this name. if found, returns it."""
     return get_dataset(name, "llama")
 
-def get_dataset(name:str, kind:str) -> BaseDataset:
+
+def get_dataset(name: str, kind: str) -> BaseDataset:
     kind = kind.lower()
     if kind == "llama":
         return LlamaDataset(dataset_name=name)
@@ -29,4 +30,3 @@ def get_dataset(name:str, kind:str) -> BaseDataset:
         return CragDataset(dataset_name=name)
 
     raise NotImplementedError("only llama and crag datasets are currently supported")
-
