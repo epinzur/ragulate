@@ -1,13 +1,14 @@
+import bz2
+import tempfile
 from abc import ABC, abstractmethod
-from os import path, makedirs
+from os import makedirs, path
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import aiohttp
 import aiofiles
-import bz2
-import tempfile
+import aiohttp
 from tqdm.asyncio import tqdm
+
 
 class BaseDataset(ABC):
 

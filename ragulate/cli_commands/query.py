@@ -58,7 +58,10 @@ def setup_query(subparsers):
     query_parser.add_argument(
         "--subset",
         type=str,
-        help=("The subset of the dataset to query", "Only valid when a single dataset is passed."),
+        help=(
+            "The subset of the dataset to query",
+            "Only valid when a single dataset is passed.",
+        ),
         action="append",
     )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
@@ -74,12 +77,13 @@ def setup_query(subparsers):
         **kwargs,
     ):
 
-
         datasets = [find_dataset(name=name) for name in dataset]
 
         if len(subset) > 0:
             if len(datasets) > 1:
-                raise ValueError("Only can set `subset` param when there is one dataset")
+                raise ValueError(
+                    "Only can set `subset` param when there is one dataset"
+                )
             else:
                 datasets[0].subsets = subset
 
