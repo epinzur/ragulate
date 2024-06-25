@@ -55,6 +55,15 @@ def setup_query(subparsers):
         help=("The name of a dataset to query", "This can be passed multiple times."),
         action="append",
     )
+    query_parser.add_argument(
+        "--subset",
+        type=str,
+        help=(
+            "The subset of the dataset to query",
+            "Only valid when a single dataset is passed.",
+        ),
+        action="append",
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -64,9 +73,19 @@ def setup_query(subparsers):
         var_name: List[str],
         var_value: List[str],
         dataset: List[str],
+        subset: List[str],
         **kwargs,
     ):
+
         datasets = [find_dataset(name=name) for name in dataset]
+
+        if len(subset) > 0:
+            if len(datasets) > 1:
+                raise ValueError(
+                    "Only can set `subset` param when there is one dataset"
+                )
+            else:
+                datasets[0].subsets = subset
 
         ingredients = convert_vars_to_ingredients(
             var_names=var_name, var_values=var_value
