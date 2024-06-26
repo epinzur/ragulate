@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from ..analysis import Analysis
 
@@ -15,12 +15,29 @@ def setup_compare(subparsers):
         required=True,
         action="append",
     )
+    compare_parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        help="The output method. Either box-plots (default) or histogram-grid",
+        default="box-plots",
+    )
     compare_parser.set_defaults(func=lambda args: call_compare(**vars(args)))
+
+
+def remove_sqlite_extension(s):
+    if s.endswith(".sqlite"):
+        return s[:-7]
+    return s
 
 
 def call_compare(
     recipe: List[str],
+    output: Optional[str] = "box-plots",
     **kwargs,
 ):
     analysis = Analysis()
-    analysis.compare(recipes=recipe)
+
+    recipes = [remove_sqlite_extension(r) for r in recipe]
+
+    analysis.compare(recipes=recipes, output=output)

@@ -40,7 +40,9 @@ class CragDataset(BaseDataset):
                 path.join(self.storage_path(), "questions.jsonl"),
             ]
             tasks = [
-                self._download_and_decompress(url=url, output_file_path=output_file, force=False)
+                self._download_and_decompress(
+                    url=url, output_file_path=output_file, force=False
+                )
                 for url, output_file in zip(urls, output_files)
             ]
             asyncio.run(asyncio.gather(*tasks))
