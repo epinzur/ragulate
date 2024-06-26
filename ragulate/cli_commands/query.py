@@ -79,7 +79,7 @@ def setup_query(subparsers):
 
         datasets = [find_dataset(name=name) for name in dataset]
 
-        if len(subset) > 0:
+        if subset is not None and len(subset) > 0:
             if len(datasets) > 1:
                 raise ValueError(
                     "Only can set `subset` param when there is one dataset"
