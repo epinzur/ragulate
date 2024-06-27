@@ -64,6 +64,23 @@ def setup_query(subparsers):
         ),
         action="append",
     )
+    query_parser.add_argument(
+        "--sample",
+        type=float,
+        help=(
+            "A decimal percentage of the queries to sample for the test",
+            "Default is 1.0 (100%)",
+        ),
+        default=1.0,
+    )
+    query_parser.add_argument(
+        "--seed",
+        type=int,
+        help=(
+            "Random seed to use for query sampling",
+            "Ensures reproducibility of tests",
+        ),
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -74,12 +91,16 @@ def setup_query(subparsers):
         var_value: List[str],
         dataset: List[str],
         subset: List[str],
+        sample: float,
+        seed: int,
         **kwargs,
     ):
+        if sample <= 0.0 or sample > 1.0:
+            raise ValueError("Sample percent must be between 0 and 1")
 
         datasets = [find_dataset(name=name) for name in dataset]
 
-        if len(subset) > 0:
+        if subset is not None and len(subset) > 0:
             if len(datasets) > 1:
                 raise ValueError(
                     "Only can set `subset` param when there is one dataset"
@@ -97,5 +118,7 @@ def setup_query(subparsers):
             method_name=method_name,
             ingredients=ingredients,
             datasets=datasets,
+            sample_percent=sample,
+            random_seed=seed,
         )
         query_pipeline.query()
