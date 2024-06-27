@@ -76,7 +76,6 @@ class QueryPipeline(BasePipeline):
                     range(len(queries)), int(self.sample_percent * len(queries))
                 )
                 queries = [queries[i] for i in sampled_indices]
-                golden_set = [golden_set[i] for i in sampled_indices]
 
             if self.restart_pipeline:
                 # TODO: Work with TruLens to get a new method added
@@ -90,11 +89,6 @@ class QueryPipeline(BasePipeline):
                 )
                 existing_queries = {record.query for record in existing_records}
                 queries = [query for query in queries if query not in existing_queries]
-                golden_set = [
-                    golden_set[i]
-                    for i in range(len(golden_set))
-                    if queries[i] not in existing_queries
-                ]
 
             self._queries[dataset.name] = queries
             self._golden_sets[dataset.name] = golden_set
