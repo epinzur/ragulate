@@ -5,7 +5,14 @@ from typing import Any, Dict, List, Optional
 
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
-from trulens_eval.feedback.provider import OpenAI, AzureOpenAI, Bedrock, LiteLLM, Langchain, Huggingface
+from trulens_eval.feedback.provider import (
+    AzureOpenAI,
+    Bedrock,
+    Huggingface,
+    Langchain,
+    LiteLLM,
+    OpenAI,
+)
 from trulens_eval.feedback.provider.base import LLMProvider
 from trulens_eval.schema.feedback import FeedbackMode, FeedbackResultStatus
 
@@ -65,7 +72,7 @@ class QueryPipeline(BasePipeline):
         self.random_seed = random_seed
         self.restart_pipeline = restart_pipeline
         self.llm_provider = llm_provider
-        self.model_name=model_name
+        self.model_name = model_name
 
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -148,17 +155,17 @@ class QueryPipeline(BasePipeline):
         provider_name = self.provider_name.lower()
         model_name = self.model_name
 
-        if provider_name == 'openai':
+        if provider_name == "openai":
             return OpenAI(model_engine=model_name)
-        elif provider_name == 'azureopenai':
+        elif provider_name == "azureopenai":
             return AzureOpenAI(deployment_name=model_name)
-        elif provider_name == 'bedrock':
+        elif provider_name == "bedrock":
             return Bedrock(model_id=model_name)
-        elif provider_name == 'litellm':
+        elif provider_name == "litellm":
             return LiteLLM(model_engine=model_name)
-        elif provider_name == 'Langchain':
+        elif provider_name == "Langchain":
             return Langchain(model_engine=model_name)
-        elif provider_name == 'huggingface':
+        elif provider_name == "huggingface":
             return Huggingface(name=model_name)
         else:
             raise ValueError(f"Unsupported provider: {provider_name}")

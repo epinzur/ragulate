@@ -3,12 +3,9 @@ from typing import List
 from ragulate.datasets import find_dataset
 from ragulate.pipelines import QueryPipeline
 
-<<<<<<< HEAD
 from ..utils import convert_vars_to_ingredients
 
 
-=======
->>>>>>> 273a5ff (Add Support for Other Providers OpenAI, AzureOpenAI, Bedrock, LiteLLM, Langchain, Huggingface)
 def setup_query(subparsers):
     query_parser = subparsers.add_parser("query", help="Run an query pipeline")
     query_parser.add_argument(
@@ -97,8 +94,14 @@ def setup_query(subparsers):
         "--llm_provider",
         type=str,
         help=("The name of the LLM Provider to use for Evaluation."),
-        choices=["OpenAI", "AzureOpenAI", "Bedrock", "LiteLLM", "Langchain", "Huggingface"],
-
+        choices=[
+            "OpenAI",
+            "AzureOpenAI",
+            "Bedrock",
+            "LiteLLM",
+            "Langchain",
+            "Huggingface",
+        ],
     )
     query_parser.add_argument(
         "--model_name",
