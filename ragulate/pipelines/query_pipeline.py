@@ -62,7 +62,6 @@ class QueryPipeline(BasePipeline):
         self.random_seed = random_seed
         self.restart_pipeline = restart_pipeline
 
-
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
@@ -78,15 +77,18 @@ class QueryPipeline(BasePipeline):
                 queries = [queries[i] for i in sampled_indices]
                 golden_set = [golden_set[i] for i in sampled_indices]
 
-
             if self.restart_pipeline:
-                self._tru.clear_records() # Clear existing records if restart is set
+                self._tru.clear_records()  # Clear existing records if restart is set
             else:
-                 # Check for existing records and filter queries
+                # Check for existing records and filter queries
                 existing_records = self._tru.get_records_and_feedbacks()
                 existing_queries = {record.query for record in existing_records}
                 queries = [query for query in queries if query not in existing_queries]
-                golden_set = [golden_set[i] for i in range(len(golden_set)) if queries[i] not in existing_queries]
+                golden_set = [
+                    golden_set[i]
+                    for i in range(len(golden_set))
+                    if queries[i] not in existing_queries
+                ]
 
             self._queries[dataset.name] = queries
             self._golden_sets[dataset.name] = golden_set

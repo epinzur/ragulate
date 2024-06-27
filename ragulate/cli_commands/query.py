@@ -5,13 +5,6 @@ from ragulate.pipelines import QueryPipeline
 
 from ..utils import convert_vars_to_ingredients
 
-def convert_str_to_bool(s: str) -> bool:
-    if s.lower() == "true":
-        return True
-    elif s.lower() == "false":
-        return False
-    else:
-        raise ValueError(f"{s} is not a valid boolean")
 
 def setup_query(subparsers):
     query_parser = subparsers.add_parser("query", help="Run an query pipeline")
@@ -89,11 +82,9 @@ def setup_query(subparsers):
         ),
     )
     query_parser.add_argument(
-        "--restart_pipeline",
-        type=convert_str_to_bool,
-        choices=('true, false')
+        "--restart",
         help="Flag to restart the query process instead of resuming",
-        action="append"
+        action="store_true",
     )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
@@ -107,7 +98,7 @@ def setup_query(subparsers):
         subset: List[str],
         sample: float,
         seed: int,
-        restart_pipeline: bool,
+        restart: bool,
         **kwargs,
     ):
         if sample <= 0.0 or sample > 1.0:
@@ -135,6 +126,6 @@ def setup_query(subparsers):
             datasets=datasets,
             sample_percent=sample,
             random_seed=seed,
-            restart_pipeline=restart_pipeline
+            restart_pipeline=restart,
         )
         query_pipeline.query()
