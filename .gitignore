@@ -174,4 +174,5 @@ datasets/
 !images/
 !images/*.png
 
-
+# streamlit cache
+.streamlit/
