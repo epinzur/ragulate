@@ -17,14 +17,14 @@ def setup_query(subparsers):
     )
     query_parser.add_argument(
         "-s",
-        "--script_path",
+        "--script",
         type=str,
         help="The path to the python script that contains the query method",
         required=True,
     )
     query_parser.add_argument(
         "-m",
-        "--method-name",
+        "--method",
         type=str,
         help="The name of the method in the script to run query",
         required=True,
@@ -90,12 +90,34 @@ def setup_query(subparsers):
         ),
         action="store_true",
     )
+    query_parser.add_argument(
+        "--provider",
+        type=str,
+        help=("The name of the LLM Provider to use for Evaluation."),
+        choices=[
+            "OpenAI",
+            "AzureOpenAI",
+            "Bedrock",
+            "LiteLLM",
+            "Langchain",
+            "Huggingface",
+        ],
+        default="OpenAI",
+    )
+    query_parser.add_argument(
+        "--model",
+        type=str,
+        help=(
+            "The name or id of the LLM model or deployment to use for Evaluation.",
+            "Generally used in combination with the --provider param.",
+        ),
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
         name: str,
-        script_path: str,
-        method_name: str,
+        script: str,
+        method: str,
         var_name: List[str],
         var_value: List[str],
         dataset: List[str],
@@ -103,6 +125,8 @@ def setup_query(subparsers):
         sample: float,
         seed: int,
         restart: bool,
+        provider: str,
+        model: str,
         **kwargs,
     ):
         if sample <= 0.0 or sample > 1.0:
@@ -124,12 +148,14 @@ def setup_query(subparsers):
 
         query_pipeline = QueryPipeline(
             recipe_name=name,
-            script_path=script_path,
-            method_name=method_name,
+            script_path=script,
+            method_name=method,
             ingredients=ingredients,
             datasets=datasets,
             sample_percent=sample,
             random_seed=seed,
             restart_pipeline=restart,
+            llm_provider=provider,
+            model_name=model,
         )
         query_pipeline.query()
