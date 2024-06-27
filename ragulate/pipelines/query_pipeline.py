@@ -66,6 +66,11 @@ class QueryPipeline(BasePipeline):
         signal.signal(signal.SIGINT, self.signal_handler)
 
         self._tru = get_tru(recipe_name=self.recipe_name)
+        if self.restart_pipeline:
+            # TODO: Work with TruLens to get a new method added
+            # so we can just delete a single "app" instead of the whole
+            # database.
+            self._tru.reset_database()
 
         for dataset in datasets:
             queries, golden_set = dataset.get_queries_and_golden_set()
@@ -77,18 +82,10 @@ class QueryPipeline(BasePipeline):
                 )
                 queries = [queries[i] for i in sampled_indices]
 
-            if self.restart_pipeline:
-                # TODO: Work with TruLens to get a new method added
-                # so we can just delete a single "app" instead of the whole
-                # database.
-                self._tru.reset_database()
-            else:
-                # Check for existing records and filter queries
-                existing_records = self._tru.get_records_and_feedbacks(
-                    app_ids=[dataset]
-                )
-                existing_queries = {record.query for record in existing_records}
-                queries = [query for query in queries if query not in existing_queries]
+            # Check for existing records and filter queries
+            existing_records = self._tru.get_records_and_feedback(app_ids=[dataset])
+            existing_queries = {record.query for record in existing_records}
+            queries = [query for query in queries if query not in existing_queries]
 
             self._queries[dataset.name] = queries
             self._golden_sets[dataset.name] = golden_set
