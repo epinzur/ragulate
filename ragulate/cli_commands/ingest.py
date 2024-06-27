@@ -32,27 +32,19 @@ def setup_ingest(subparsers):
     ingest_parser.add_argument(
         "--var-name",
         type=str,
-        help=(
-            "The name of a variable in the ingest script",
-            "This should be paired with a `--var-value` argument",
-            "and can be passed multiple times.",
-        ),
+        help="The name of a variable in the ingest script. This should be paired with a `--var-value` argument and can be passed multiple times.",
         action="append",
     )
     ingest_parser.add_argument(
         "--var-value",
         type=str,
-        help=(
-            "The value of a variable in the ingest script",
-            "This should be paired with a `--var-name` argument",
-            "and can be passed multiple times.",
-        ),
+        help="The value of a variable in the ingest script. This should be paired with a `--var-name` argument and can be passed multiple times.",
         action="append",
     )
     ingest_parser.add_argument(
         "--dataset",
         type=str,
-        help=("The name of a dataset to ingest", "This can be passed multiple times."),
+        help="The name of a dataset to ingest. This can be passed multiple times.",
         action="append",
     )
     ingest_parser.set_defaults(func=lambda args: call_ingest(**vars(args)))

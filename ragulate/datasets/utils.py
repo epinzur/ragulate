@@ -1,5 +1,6 @@
 import os
-from typing import List
+
+import inflection
 
 from .base_dataset import BaseDataset
 from .crag_dataset import CragDataset
@@ -8,7 +9,7 @@ from .llama_dataset import LlamaDataset
 
 def find_dataset(name: str) -> BaseDataset:
     root_path = "datasets"
-    name = name.lower()
+    name = inflection.underscore(name)
     for kind in os.listdir(root_path):
         kind_path = os.path.join(root_path, kind)
         if os.path.isdir(kind_path):
