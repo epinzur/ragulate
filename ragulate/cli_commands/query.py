@@ -1,7 +1,10 @@
 from typing import List
 
-from ragulate.datasets import load_datasets
+from ragulate.datasets import find_dataset
 from ragulate.pipelines import QueryPipeline
+
+from ..utils import convert_vars_to_ingredients
+
 
 def setup_query(subparsers):
     query_parser = subparsers.add_parser("query", help="Run an query pipeline")
@@ -53,30 +56,13 @@ def setup_query(subparsers):
         action="append",
     )
     query_parser.add_argument(
-        "--sample",
+        "--subset",
         type=str,
-        help=("Allows for running only a sample of queries, can choose percentage or number of queries."),
+        help=(
+            "The subset of the dataset to query",
+            "Only valid when a single dataset is passed.",
+        ),
         action="append",
-    )
-    query_parser.add_argument(
-        "--seed",
-        type=str,
-        help=("Seed for random generator, to ensure reproducibility"),
-        action="append",
-    )
-    query_parser.add_argument(
-        "--llm_provider",
-        type=str,
-        help=("The name of the llm Provider"),
-        choices=["OpenAI", "AzureOpenAI", "Bedrock", "LiteLLM", "Langchain", "Huggingface"],
-        action="append"
-
-    )
-    query_parser.add_argument(
-        "--model|deployment_name",
-        type=str,
-        help=("The name of the llm/deployment/chain to use"),
-        action="append"
     )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
@@ -87,24 +73,30 @@ def setup_query(subparsers):
         var_name: List[str],
         var_value: List[str],
         dataset: List[str],
-        sample: str,
-        seed: str,
-        llm_provider: str,
-        model_name: str,
+        subset: List[str],
         **kwargs,
     ):
-        datasets = load_datasets(dataset_names=dataset)
+
+        datasets = [find_dataset(name=name) for name in dataset]
+
+        if len(subset) > 0:
+            if len(datasets) > 1:
+                raise ValueError(
+                    "Only can set `subset` param when there is one dataset"
+                )
+            else:
+                datasets[0].subsets = subset
+
+        ingredients = convert_vars_to_ingredients(
+            var_names=var_name, var_values=var_value
+        )
 
         query_pipeline = QueryPipeline(
             recipe_name=name,
             script_path=script_path,
             method_name=method_name,
-            var_names=var_name,
-            var_values=var_value,
+            ingredients=ingredients,
             datasets=datasets,
-            sample=sample,
-            seed=seed,
-            llm_provider=llm_provider,
-            model_name=model_name
+            
         )
         query_pipeline.query()

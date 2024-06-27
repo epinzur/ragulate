@@ -1,3 +1,5 @@
+# this must be imported first for dynamic module loading to function properly
+import setuptools  # isort: skip
 import argparse
 
 from dotenv import load_dotenv
@@ -22,6 +24,7 @@ def main() -> None:
     cli_commands.setup_ingest(subparsers=subparsers)
     cli_commands.setup_query(subparsers=subparsers)
     cli_commands.setup_compare(subparsers=subparsers)
+    cli_commands.setup_run(subparsers=subparsers)
 
     # Parse the command-line arguments
     args = parser.parse_args()

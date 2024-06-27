@@ -1,4 +1,4 @@
-from ragulate.datasets import LlamaDataset
+from ragulate.datasets import get_dataset
 
 
 def setup_download(subparsers):
@@ -22,7 +22,5 @@ def setup_download(subparsers):
 
 
 def call_download(dataset_name: str, kind: str, **kwargs):
-    if not kind == "llama":
-        raise ("Currently only Llama Datasets are supported. Set param `-k llama`")
-    llama = LlamaDataset(dataset_name=dataset_name)
-    llama.download_dataset()
+    dataset = get_dataset(name=dataset_name, kind=kind)
+    dataset.download_dataset()
