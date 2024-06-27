@@ -64,6 +64,24 @@ def setup_query(subparsers):
         ),
         action="append",
     )
+    query_parser.add_argument(
+        "--sample_size",
+        type=str,
+        help=(
+            "A percent of the queries to sample for the test",
+            "Default is 100%",
+        ),
+        action="append",
+    )
+    query_parser.add_argument(
+        "--random_seed",
+        type=str,
+        help=(
+            "Random seed to use for query sampling",
+            "Ensures reproducibility of tests"
+        ),
+        action="append",
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -74,6 +92,8 @@ def setup_query(subparsers):
         var_value: List[str],
         dataset: List[str],
         subset: List[str],
+        sample_size: str,
+        random_seed: str,
         **kwargs,
     ):
 
@@ -97,5 +117,7 @@ def setup_query(subparsers):
             method_name=method_name,
             ingredients=ingredients,
             datasets=datasets,
+            sample_size=int(sample_size),
+            random_seed=int(random_seed)
         )
         query_pipeline.query()

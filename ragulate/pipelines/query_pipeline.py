@@ -1,5 +1,6 @@
 import signal
 import time
+import random
 from typing import Any, Dict, List
 
 from tqdm import tqdm
@@ -44,6 +45,8 @@ class QueryPipeline(BasePipeline):
         method_name: str,
         ingredients: Dict[str, Any],
         datasets: List[BaseDataset],
+        sample_size: float = 1.0,
+        random_seed: int = None,
         **kwargs,
     ):
         super().__init__(
@@ -54,13 +57,23 @@ class QueryPipeline(BasePipeline):
             datasets=datasets,
         )
 
+        self.sample_size = sample_size
+        self.random_seed = random_seed
+
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
         for dataset in datasets:
-            self._queries[dataset.name], self._golden_sets[dataset.name] = (
-                dataset.get_queries_and_golden_set()
-            )
+            queries, golden_set = dataset.get_queries_and_golden_set()
+            if self.sample < 1.0:
+                if self.seed is not None:
+                    random.seed(self.seed)
+                sampled_indices = random.sample(range(len(queries)), int(self.sample * len(queries)))
+                queries = [queries[i] for i in sampled_indices]
+                golden_set = [golden_set[i] for i in sampled_indices]
+            
+            self._queries[dataset.name] = queries
+            self._golden_sets[dataset.name] = golden_set
             self._total_queries += len(self._queries[dataset.name])
 
         metric_count = 4
