@@ -95,10 +95,10 @@ class QueryPipeline(BasePipeline):
                 queries = [queries[i] for i in sampled_indices]
 
             # Check for existing records and filter queries
-            existing_records = self._tru.get_records_and_feedback(
+            existing_records, _feedbacks = self._tru.get_records_and_feedback(
                 app_ids=[dataset.name]
             )
-            existing_queries = {record.query for record in existing_records}
+            existing_queries = existing_records["input"].dropna().tolist()
             queries = [query for query in queries if query not in existing_queries]
 
             self._queries[dataset.name] = queries
