@@ -81,6 +81,15 @@ def setup_query(subparsers):
             "Ensures reproducibility of tests",
         ),
     )
+    query_parser.add_argument(
+        "--restart",
+        help=(
+            "Flag to restart the query process instead of resuming.",
+            "WARNING: this will delete all existing data this query name,",
+            "not just the data for the tagged datasets.",
+        ),
+        action="store_true",
+    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -93,6 +102,7 @@ def setup_query(subparsers):
         subset: List[str],
         sample: float,
         seed: int,
+        restart: bool,
         **kwargs,
     ):
         if sample <= 0.0 or sample > 1.0:
@@ -120,5 +130,6 @@ def setup_query(subparsers):
             datasets=datasets,
             sample_percent=sample,
             random_seed=seed,
+            restart_pipeline=restart,
         )
         query_pipeline.query()
