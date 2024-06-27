@@ -1,7 +1,7 @@
+import random
 import signal
 import time
-import random
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
@@ -45,8 +45,8 @@ class QueryPipeline(BasePipeline):
         method_name: str,
         ingredients: Dict[str, Any],
         datasets: List[BaseDataset],
-        sample_size: float = 1.0,
-        random_seed: int = None,
+        sample_percent: float = 1.0,
+        random_seed: Optional[int] = None,
         **kwargs,
     ):
         super().__init__(
@@ -57,7 +57,7 @@ class QueryPipeline(BasePipeline):
             datasets=datasets,
         )
 
-        self.sample_size = sample_size
+        self.sample_percent = sample_percent
         self.random_seed = random_seed
 
         # Set up the signal handler for SIGINT (Ctrl-C)
@@ -65,13 +65,15 @@ class QueryPipeline(BasePipeline):
 
         for dataset in datasets:
             queries, golden_set = dataset.get_queries_and_golden_set()
-            if self.sample < 1.0:
-                if self.seed is not None:
-                    random.seed(self.seed)
-                sampled_indices = random.sample(range(len(queries)), int(self.sample * len(queries)))
+            if self.sample_percent < 1.0:
+                if self.random_seed is not None:
+                    random.seed(self.random_seed)
+                sampled_indices = random.sample(
+                    range(len(queries)), int(self.sample_percent * len(queries))
+                )
                 queries = [queries[i] for i in sampled_indices]
                 golden_set = [golden_set[i] for i in sampled_indices]
-            
+
             self._queries[dataset.name] = queries
             self._golden_sets[dataset.name] = golden_set
             self._total_queries += len(self._queries[dataset.name])
