@@ -117,7 +117,7 @@ def setup_query(subparsers):
             method_name=method_name,
             ingredients=ingredients,
             datasets=datasets,
-            sample_size=int(sample_size),
+            sample_size=float(sample_size),
             random_seed=int(random_seed)
         )
         query_pipeline.query()
