@@ -83,7 +83,11 @@ def setup_query(subparsers):
     )
     query_parser.add_argument(
         "--restart",
-        help="Flag to restart the query process instead of resuming",
+        help=(
+            "Flag to restart the query process instead of resuming.",
+            "WARNING: this will delete all existing data this query name,",
+            "not just the data for the tagged datasets.",
+        ),
         action="store_true",
     )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))

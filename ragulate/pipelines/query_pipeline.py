@@ -65,8 +65,9 @@ class QueryPipeline(BasePipeline):
         # Set up the signal handler for SIGINT (Ctrl-C)
         signal.signal(signal.SIGINT, self.signal_handler)
 
-        for dataset in datasets:
+        self._tru = get_tru(recipe_name=self.recipe_name)
 
+        for dataset in datasets:
             queries, golden_set = dataset.get_queries_and_golden_set()
             if self.sample_percent < 1.0:
                 if self.random_seed is not None:
@@ -78,10 +79,15 @@ class QueryPipeline(BasePipeline):
                 golden_set = [golden_set[i] for i in sampled_indices]
 
             if self.restart_pipeline:
-                self._tru.clear_records()  # Clear existing records if restart is set
+                # TODO: Work with TruLens to get a new method added
+                # so we can just delete a single "app" instead of the whole
+                # database.
+                self._tru.reset_database()
             else:
                 # Check for existing records and filter queries
-                existing_records = self._tru.get_records_and_feedbacks()
+                existing_records = self._tru.get_records_and_feedbacks(
+                    app_ids=[dataset]
+                )
                 existing_queries = {record.query for record in existing_records}
                 queries = [query for query in queries if query not in existing_queries]
                 golden_set = [
@@ -102,8 +108,6 @@ class QueryPipeline(BasePipeline):
         self.stop_evaluation("sigint")
 
     def start_evaluation(self):
-        self._tru = get_tru(recipe_name=self.recipe_name)
-        self._tru.reset_database()
         self._tru.start_evaluator(disable_tqdm=True)
         self._evaluation_running = True
 
