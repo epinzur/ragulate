@@ -1,47 +1,26 @@
 import os
 
 from langchain_astradb import AstraDBVectorStore
-from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 LLM_MODEL = "gpt-3.5-turbo"
 
 
-def get_vector_store(chunk_size: int):
+def get_vector_store(collection_name: str):
     return AstraDBVectorStore(
         embedding=OpenAIEmbeddings(model=EMBEDDING_MODEL),
-        collection_name=f"ada_chunk_size_{chunk_size}",
+        collection_name=collection_name,
         token=os.getenv("ASTRA_DB_TOKEN"),
         api_endpoint=os.getenv("ASTRA_DB_ENDPOINT"),
-        namespace="oldtrulens_colbert",
     )
 
 
-def ingest(file_path: str, chunk_size: int, **kwargs):
-    vector_store = get_vector_store(chunk_size=chunk_size)
-
-    chunk_overlap = min(chunk_size / 4, min(chunk_size / 2, 64))
-
-    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        model_name=EMBEDDING_MODEL,
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-    )
-
-    docs = UnstructuredFileLoader(
-        file_path=file_path, mode="single", strategy="fast"
-    ).load()
-    split_docs = text_splitter.split_documents(docs)
-    vector_store.add_documents(split_docs)
-
-
-def query_pipeline(k: int, chunk_size: int, **kwargs):
-    vector_store = get_vector_store(chunk_size=chunk_size)
+def query_pipeline(collection_name: str, **kwargs):
+    vector_store = get_vector_store(collection_name=collection_name)
     llm = ChatOpenAI(model_name=LLM_MODEL)
 
     # build a prompt
@@ -55,7 +34,7 @@ def query_pipeline(k: int, chunk_size: int, **kwargs):
 
     rag_chain = (
         {
-            "context": vector_store.as_retriever(search_kwargs={"k": k}),
+            "context": vector_store.as_retriever(search_kwargs={"k": 5}),
             "question": RunnablePassthrough(),
         }
         | prompt

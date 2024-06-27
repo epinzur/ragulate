@@ -1,0 +1,35 @@
+version: 0.1
+
+steps:
+  ingest:
+    - name: colbert_ingest
+      script: colbert_chunk_size_and_k.py
+      method: ingest
+    - name: openai_ingest
+      script: open_ai_chunk_size_and_k.py
+      method: ingest
+  query:
+    - name: colbert_query
+      script: colbert_chunk_size_and_k.py
+      method: query_pipeline
+    - name: openai_query
+      script: open_ai_chunk_size_and_k.py
+      method: query_pipeline
+
+recipes:
+  - name: colbert_chunk_size_256_k_5
+    #ingest: colbert_ingest
+    query: colbert_query
+    ingredients:
+      - chunk_size: 256
+      - k: 5
+  - name: open_ai_chunk_size_1024_k_5
+    #ingest: openai_ingest
+    query: openai_query
+    ingredients:
+      - chunk_size: 1024
+      - k: 5
+
+datasets:
+  - name: BraintrustCodaHelpDesk
+    kind: llama

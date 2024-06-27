@@ -24,7 +24,7 @@ batch_size = 640
 
 astra_token = os.getenv("ASTRA_DB_TOKEN")
 database_id = os.getenv("ASTRA_DB_ID")
-keyspace = "colbert"
+keyspace = "lots_of_data_colbert"
 
 import logging
 
@@ -43,8 +43,8 @@ def get_database(chunk_size: int) -> CassandraDatabase:
     table_name = f"colbert_chunk_size_{chunk_size}"
 
     return CassandraDatabase.from_astra(
-        astra_token=astra_token,
         database_id=database_id,
+        astra_token=astra_token,
         keyspace=keyspace,
         table_name=table_name,
         timeout=500,
@@ -73,8 +73,47 @@ def len_function(text: str) -> int:
     return len(tokenizer.tokenize(text))
 
 
+completed_doc_ids_file = "completed_doc_ids.txt"
+
+
+def completed_doc_ids():
+    try:
+        with open(completed_doc_ids_file, "r") as file:
+            doc_ids = file.readlines()
+        # Remove any trailing newline characters
+        doc_ids = [doc_id.strip() for doc_id in doc_ids]
+    except FileNotFoundError:
+        # Return an empty list if the file doesn't exist
+        doc_ids = []
+    return doc_ids
+
+
+def set_completed_doc_id(doc_id):
+    with open(completed_doc_ids_file, "a") as file:
+        file.write(doc_id + "\n")
+
+
 async def ingest(file_path: str, chunk_size: int, **kwargs):
+    print(f"starting ingest on {file_path}")
+
     doc_id = Path(file_path).name
+
+    if doc_id in completed_doc_ids():
+        return
+
+    colbert_vector_store = get_vector_store(chunk_size=chunk_size)
+
+    # if this doesn't error, then the document is already ingested
+    try:
+        await colbert_vector_store._database.get_chunk_data(
+            doc_id=doc_id, chunk_id=0, include_embedding=False
+        )
+        colbert_vector_store._database._table.session.shutdown()
+        colbert_vector_store._database._table.session.cluster.shutdown()
+        set_completed_doc_id(doc_id=doc_id)
+        return
+    except:
+        pass
 
     chunk_overlap = min(chunk_size / 4, min(chunk_size / 2, 64))
 
@@ -97,9 +136,17 @@ async def ingest(file_path: str, chunk_size: int, **kwargs):
     start = time.time()
     chunked_docs = text_splitter.split_documents(docs)
     duration = time.time() - start
-    print(
-        f"It took {duration} seconds to split the document into {len(chunked_docs)} chunks"
-    )
+
+    if len(chunked_docs) == 0:
+        print(f"Found no chunks, skipping file.")
+        colbert_vector_store._database._table.session.shutdown()
+        colbert_vector_store._database._table.session.cluster.shutdown()
+        set_completed_doc_id(doc_id=doc_id)
+        return
+    else:
+        print(
+            f"It took {duration} seconds to split the document into {len(chunked_docs)} chunks"
+        )
 
     texts = [doc.page_content for doc in chunked_docs]
     start = time.time()
@@ -107,9 +154,7 @@ async def ingest(file_path: str, chunk_size: int, **kwargs):
     duration = time.time() - start
     print(f"It took {duration} seconds to embed {len(chunked_docs)} chunks")
 
-    colbert_vector_store = get_vector_store(chunk_size=chunk_size)
-
-    await colbert_vector_store.adelete_chunks(doc_ids=[doc_id])
+    # await colbert_vector_store.adelete_chunks(doc_ids=[doc_id])
 
     chunks: List[Chunk] = []
     for i, doc in enumerate(chunked_docs):
@@ -129,6 +174,9 @@ async def ingest(file_path: str, chunk_size: int, **kwargs):
     print(
         f"It took {duration} seconds to insert {len(chunked_docs)} chunks into AstraDB"
     )
+    colbert_vector_store._database._table.session.shutdown()
+    colbert_vector_store._database._table.session.cluster.shutdown()
+    set_completed_doc_id(doc_id=doc_id)
 
 
 def query_pipeline(k: int, chunk_size: int, **kwargs):
