@@ -2,17 +2,16 @@ import random
 import signal
 import time
 from typing import Any, Dict, List, Optional
+import pandas as pd
 
 from tqdm import tqdm
 from trulens_eval import Tru, TruChain
 from trulens_eval.feedback.provider import (
     AzureOpenAI,
-    Bedrock,
     Huggingface,
-    Langchain,
-    LiteLLM,
     OpenAI,
 )
+from trulens_eval.feedback.provider import OpenAI
 from trulens_eval.feedback.provider.base import LLMProvider
 from trulens_eval.schema.feedback import FeedbackMode, FeedbackResultStatus
 
@@ -116,6 +115,16 @@ class QueryPipeline(BasePipeline):
         self._tru.start_evaluator(disable_tqdm=True)
         self._evaluation_running = True
 
+    def export_results(self):
+        records = self._tru.get_records_and_feedbacks()
+        data = [record.__dict__ for record in records]
+
+        # Convert to DataFrame
+        df = pd.DataFrame(data)
+
+        # Export to JSON
+        df.to_json('results.json', orient='records')
+
     def stop_evaluation(self, loc: str):
         if self._evaluation_running:
             try:
@@ -123,6 +132,7 @@ class QueryPipeline(BasePipeline):
                 self._tru.stop_evaluator()
                 self._evaluation_running = False
                 self._tru.delete_singleton()
+                self.export_results()
             except Exception as e:
                 logger.error(f"issue stopping evaluator: {e}")
             finally:
@@ -158,12 +168,6 @@ class QueryPipeline(BasePipeline):
             return OpenAI(model_engine=model_name)
         elif llm_provider == "azureopenai":
             return AzureOpenAI(deployment_name=model_name)
-        elif llm_provider == "bedrock":
-            return Bedrock(model_id=model_name)
-        elif llm_provider == "litellm":
-            return LiteLLM(model_engine=model_name)
-        elif llm_provider == "Langchain":
-            return Langchain(model_engine=model_name)
         elif llm_provider == "huggingface":
             return Huggingface(name=model_name)
         else:
