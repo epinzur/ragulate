@@ -101,8 +101,6 @@ def setup_query(subparsers):
         sample: float,
         seed: int,
         restart: bool,
-        provider: str,
-        model: str,
         **kwargs,
     ):
         if sample <= 0.0 or sample > 1.0:
@@ -131,7 +129,5 @@ def setup_query(subparsers):
             sample_percent=sample,
             random_seed=seed,
             restart_pipeline=restart,
-            llm_provider=provider,
-            model_name=model,
         )
         query_pipeline.query()
