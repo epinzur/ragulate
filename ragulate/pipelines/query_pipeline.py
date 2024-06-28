@@ -9,7 +9,7 @@ from trulens_eval import Tru, TruChain
 from trulens_eval.feedback.provider import (
     AzureOpenAI,
     Huggingface,
-    OpenAI
+    OpenAI,
 )
 from trulens_eval.feedback.provider import OpenAI
 from trulens_eval.feedback.provider.base import LLMProvider

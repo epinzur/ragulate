@@ -88,22 +88,6 @@ def setup_query(subparsers):
         type=str,
         help="The name or id of the LLM model or deployment to use for Evaluation. Generally used in combination with the `--provider` param.",
     )
-    query_parser.add_argument(
-        "--provider",
-        type=str,
-        help="The name of the LLM Provider to use for Evaluation.",
-        choices=[
-            "OpenAI",
-            "AzureOpenAI",
-            "Huggingface",
-        ],
-        default="OpenAI",
-    )
-    query_parser.add_argument(
-        "--model",
-        type=str,
-        help="The name or id of the LLM model or deployment to use for Evaluation. Generally used in combination with the `--provider` param.",
-    )
     query_parser.set_defaults(func=lambda args: call_query(**vars(args)))
 
     def call_query(
@@ -148,6 +132,6 @@ def setup_query(subparsers):
             random_seed=seed,
             restart_pipeline=restart,
             llm_provider=provider,
-            model_name=model
+            model_name=model,
         )
         query_pipeline.query()
